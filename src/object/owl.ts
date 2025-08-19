@@ -42,7 +42,7 @@ export class Owl extends Group {
 
     window.addEventListener("pointermove", (e) => {
       const pointer = e.clientX / window.innerWidth;
-      idealPosition = pointer * halfPlayableWidth - halfPlayableWidth;
+      idealPosition = pointer * playableWidth - halfPlayableWidth;
     });
 
     this.on("animate", (e) => {
