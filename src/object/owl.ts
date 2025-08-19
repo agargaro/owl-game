@@ -3,12 +3,14 @@ import { AnimationAction, AnimationClip, AnimationMixer, Group } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import { owlFlyHeight, playableWidth } from "../data/config.js";
+import { VirtualJoystick } from "../ui/virtual-joystick.js";
 
 preload(GLTFLoader, "owl.glb");
 export class Owl extends Group {
   public override name = "Owl";
   private _mixer = new AnimationMixer(this);
   private _flyAction: AnimationAction;
+  private joystick = new VirtualJoystick();
 
   constructor() {
     super();
@@ -40,10 +42,18 @@ export class Owl extends Group {
     let idealPosition = 0;
     const halfPlayableWidth = playableWidth / 2;
 
-    window.addEventListener("pointermove", (e) => {
-      const pointer = e.clientX / window.innerWidth;
-      idealPosition = pointer * playableWidth - halfPlayableWidth;
-    });
+    this.joystick.connect();
+
+    // window.addEventListener("pointermove", (e) => {
+    //   const pointer = e.clientX / window.innerWidth;
+    //   idealPosition = pointer * playableWidth - halfPlayableWidth;
+    // });
+
+    this.joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => {
+      console.log(event);
+      idealPosition = event.direction.x * event.force * halfPlayableWidth;
+    })
+
 
     this.on("animate", (e) => {
       const t = 1 - 0.001 ** e.delta;
@@ -51,4 +61,7 @@ export class Owl extends Group {
       this.rotation.z = -(this.position.x - idealPosition) * e.delta * 40;
     });
   }
+
+
+
 }
