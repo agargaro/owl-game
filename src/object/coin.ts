@@ -10,6 +10,7 @@ import { CustomEventMap } from "../data/events.js";
 preload(GLTFLoader, 'coin.glb')
 export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMaterial, CustomEventMap> {
   public override name = "Coin";
+  public collectedCount = 0;
 
   constructor() {
     const gltf = get<GLTF>("coin.glb");
@@ -25,12 +26,14 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMateria
 
     this.addEventListener('collision', (e) => {
       // TODO add particles
+      this.collectedCount++;
+      console.log(this.collectedCount); // TODO remove
       this.removeInstances(e.instanceIndex);
     });
 
     this.addInstances(1000, (obj, index) => {
       const laneIndex = Math.floor(Math.random() * 3) - 1;
-      obj.position.set(laneIndex, owlFlyHeight, -index);
+      obj.position.set(laneIndex * 2, owlFlyHeight, -index);
       obj.scale.divideScalar(2);
     });
 

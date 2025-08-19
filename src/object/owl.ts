@@ -33,7 +33,7 @@ export class Owl extends Group {
     this.bindInteraction();
 
     this.on('beforeanimate', (e) => {
-      this.translateZ(e.delta * 5);
+      this.translateZ(e.delta * 10);
     });
   }
 

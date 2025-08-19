@@ -19,7 +19,7 @@ export class GameScene extends Scene {
   constructor() {
     super();
 
-    this.fog = new FogExp2('gray', 0.05);
+    this.fog = new FogExp2('gray', 0.07);
 
     this.on('afteranimate', (e) => this.collisionManager.update());
 

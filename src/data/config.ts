@@ -1,3 +1,3 @@
-export const owlFlyHeight = 2;
-export const playableWidth = 3;
+export const owlFlyHeight = 1.5;
+export const playableWidth = 4;
 // export const startSpeed = 2; // TODO add
