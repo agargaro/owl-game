@@ -3,7 +3,7 @@ import { Main } from '@three.ez/main';
 import { DRACOLoader, GLTFLoader } from 'three/examples/jsm/Addons.js';
 import { GameScene } from './core/scene-game.js';
 
-const main = new Main({ showStats: true });
+const main = new Main({ showStats: true, enableCursor: false  });
 
 const gltfLoader = getLoader(GLTFLoader);
 gltfLoader.setDRACOLoader(new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/libs/draco/gltf/'));

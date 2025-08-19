@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@three.ez/asset-manager": "^0.0.1",
+    "@three.ez/batched-mesh-extensions": "^0.0.9",
     "@three.ez/instanced-mesh": "^0.3.5",
     "@three.ez/main": "^0.5.10",
     "three": "^0.179.1"

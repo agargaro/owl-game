@@ -1,12 +1,13 @@
 import { AmbientLight, DirectionalLight, FogExp2, Scene } from "three";
 import { CollisionManager } from "../controller/collision-controller.js";
 import { Coin } from "../object/coin.js";
-import { Ground } from "../object/ground.js";
+import { Terrain } from "../object/terrain.js";
 import { Owl } from "../object/owl.js";
 import { GameCamera } from "./camera-game.js";
 import { Pine } from "../object/pine.js";
 
 export class GameScene extends Scene {
+  public override name = "Scene-Game";
   public owl = new Owl();
   public coin = new Coin();
   public pine = new Pine();
@@ -26,6 +27,6 @@ export class GameScene extends Scene {
     this.camera.add(this.directionalLight, this.directionalLight.target);
 
     // test TODO add asset
-    this.add(new Ground());
+    this.add(new Terrain());
   }
 }

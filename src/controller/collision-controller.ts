@@ -8,6 +8,7 @@ export class CollisionManager {
   private _owl: Owl;
   private _coin: Coin;
   private _pine: Pine;
+  private _owlBox = new Box3();
 
   constructor(scene: GameScene) {
     this._owl = scene.owl;
@@ -19,10 +20,10 @@ export class CollisionManager {
     const coin = this._coin;
     const owl = this._owl;
     const pine = this._pine;
+    const owlBox = this._owlBox;
 
-    owl.updateMatrixWorld();
-
-    const owlBox = new Box3().setFromObject(owl); // precompute it TODO
+    owlBox.copy(owl.collider);
+    owlBox.translate(owl.position);
 
     coin.bvh.intersectBox(owlBox, (instanceIndex) => {
       coin.dispatchEvent({ type: 'collision', instanceIndex });
