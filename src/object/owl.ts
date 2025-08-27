@@ -1,11 +1,12 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { AnimationAction, AnimationClip, AnimationMixer, Box3, Group } from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import { owlFlyHeight, playableWidth } from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 
 preload(GLTFLoader, "owl.glb");
+preload(KTX2Loader, "owl-brown.ktx2", "owl-normal.ktx2");
 export class Owl extends Group {
   public override name = "Owl";
   public collider = new Box3();
@@ -38,9 +39,18 @@ export class Owl extends Group {
   }
 
   private removeAccesories(): void {
+    const map = get("owl-brown.ktx2");
+    const normalMap = get('owl-normal.ktx2');
+
     this.traverse((child) => {
       if (!child.name.includes("Owl")) {
         child.visible = false;
+      } else {
+        // TODO refactor
+        if (child.material) {
+          child.material.map = map;
+          child.material.normalMap = normalMap;
+        }
       }
     });
   }
