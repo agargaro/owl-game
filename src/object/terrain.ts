@@ -1,9 +1,10 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { createRadixSort, getBatchedMeshCount } from "@three.ez/batched-mesh-extensions";
-import { BatchedMesh, Matrix4, Mesh, MeshLambertMaterial, PlaneGeometry } from "three";
+import { BatchedMesh, Matrix4, Mesh, MeshStandardMaterial } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import { terrainSize } from "../data/config.js";
 
-preload(GLTFLoader, 'terrain.glb')
+preload(GLTFLoader, 'terrain.glb');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
 
@@ -13,7 +14,7 @@ export class Terrain extends BatchedMesh {
 
     const { vertexCount, indexCount } = getBatchedMeshCount(geometries);
 
-    super(50, vertexCount, indexCount, new MeshLambertMaterial());
+    super(50, vertexCount, indexCount, (gltf.scene.children[0] as Mesh).material as MeshStandardMaterial);
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 3;
@@ -28,7 +29,8 @@ export class Terrain extends BatchedMesh {
     for (let i = 0; i < this.maxInstanceCount; i++) {
       const geometryIndex = Math.floor(Math.random() * geometries.length);
       this.addInstance(geometryIndex);
-      this.setMatrixAt(i, matrix.makeTranslation(0, 0, i * -12));
+      this.setMatrixAt(i, matrix.makeTranslation(0, 0, i * -terrainSize));
+      // TODO add rotation too?
     }
   }
 }
