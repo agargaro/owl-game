@@ -31,10 +31,8 @@ export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
 
   constructor(init?: PublicDataProps<VirtualJoystick>) {
     super();
-    if (!isMobile()) {
       Object.assign(this, init);
       this.makeDom();
-    }
   }
 
   connect(dom: HTMLElement | Document = document) {
