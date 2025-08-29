@@ -1,13 +1,14 @@
 import { PerspectiveCameraAuto } from "@three.ez/main";
 import { Object3D, Vector3 } from "three";
+import { cameraFar } from "../data/config.js";
 
 export class GameCamera extends PerspectiveCameraAuto {
   public override name = "GameCamera";
-  public targetOffset = new Vector3(0, 6, 6);
-  public lookAtOffset = new Vector3(0, 0, -2);
+  public targetOffset = new Vector3(0, 4, 4);
+  public lookAtOffset = new Vector3(0, 0, -3);
 
   constructor(target: Object3D) {
-    super();
+    super(50, 0.1, cameraFar);
     this.followOwl(target);
   }
 

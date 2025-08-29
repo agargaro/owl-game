@@ -1,5 +1,6 @@
-export const owlFlyHeight = 1.5;
+export const owlFlyHeight = 3;
 export const playableWidth = 4;
 export const terrainSize = 38;
 export const maxSpeed = 3;
-export const acceleration = 0.02;
+export const acceleration = 0.01;
+export const cameraFar = 40;

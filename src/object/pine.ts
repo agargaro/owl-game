@@ -1,8 +1,7 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial } from "three";
+import { BoxGeometry, BufferGeometry, ConeGeometry, Mesh, MeshStandardMaterial, TorusGeometry } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { owlFlyHeight } from "../data/config.js";
 import { CustomEventMap } from "../data/events.js";
 
 preload(GLTFLoader, 'pine.glb')
@@ -17,6 +16,9 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshStandardMater
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 1;
+    this.castShadow = true;
+
+    // this.addShadowLOD(new ConeGeometry(2, 4, 8));
 
     this.addEventListener('collision', (e) => {
       this.removeInstances(e.instanceIndex); // remove

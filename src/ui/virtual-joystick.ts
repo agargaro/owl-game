@@ -1,10 +1,6 @@
-// SimpleVirtualJoystick.ts
 import { EventDispatcher, Vector2 } from "three";
 
-type PublicDataProps<T> = {
-  [K in keyof T as T[K] extends Function ? never : K]: T[K];
-};
-
+type PublicDataProps<T> = { [K in keyof T as T[K] extends Function ? never : K]: T[K]; };
 type MoveMsg = { direction: Vector2; force: number };
 
 let joystickID = 0;
@@ -31,18 +27,18 @@ export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
 
   constructor(init?: PublicDataProps<VirtualJoystick>) {
     super();
-      Object.assign(this, init);
-      this.makeDom();
+    Object.assign(this, init);
+    this.makeDom();
   }
 
-  connect(dom: HTMLElement | Document = document) {
-    dom.addEventListener<'pointerdown'>("pointerdown", this.onDown, { passive: false });
-    dom.addEventListener<'pointermove'>("pointermove", this.onMove, { passive: false });
-    dom.addEventListener<'pointerup'>("pointerup", this.onUp, { passive: false });
-    dom.addEventListener<'pointercancel'>("pointercancel", this.onUp, { passive: false });
+  connect(dom: HTMLElement) {
+    dom.addEventListener("pointerdown", this.onDown, { passive: false });
+    dom.addEventListener("pointermove", this.onMove, { passive: false });
+    dom.addEventListener("pointerup", this.onUp, { passive: false });
+    dom.addEventListener("pointercancel", this.onUp, { passive: false });
   }
 
-  disconnect(dom: HTMLElement | Document = document) {
+  disconnect(dom: HTMLElement) {
     dom.removeEventListener("pointerdown", this.onDown);
     dom.removeEventListener("pointermove", this.onMove);
     dom.removeEventListener("pointerup", this.onUp);

@@ -1,6 +1,6 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { createRadixSort, InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BufferGeometry, Mesh, MeshStandardMaterial } from "three";
+import { BoxGeometry, BufferGeometry, CircleGeometry, Mesh, MeshStandardMaterial, TorusGeometry } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { owlFlyHeight } from "../data/config.js";
 import { CustomEventMap } from "../data/events.js";
@@ -16,10 +16,13 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMateria
     const gltf = get<GLTF>("coin.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
 
-    super(mesh.geometry, mesh.material);
+    super(mesh.geometry, mesh.material, { createEntities: true });
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 2;
+    this.castShadow = true;
+
+    // this.addShadowLOD(new TorusGeometry(0.1, 0.1, 4, 4));
 
     this.sortObjects = true;
     this.customSort = createRadixSort(this);
@@ -34,9 +37,15 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMateria
     this.addInstances(1000, (obj, index) => {
       const laneIndex = Math.floor(Math.random() * 3) - 1;
       obj.position.set(laneIndex * 2, owlFlyHeight, -index);
-      obj.scale.divideScalar(2);
+      obj.scale.divideScalar(1.5);
     });
 
-    this.computeBVH();
+    this.computeBVH({ margin: 0.1 });
+
+    this.on('animate', (e) => {
+      this.updateInstances((obj) => {
+        obj.rotateY(e.delta * 3);
+      });
+    });
   }
 }

@@ -9,10 +9,10 @@ preload(GLTFLoader, "owl.glb");
 preload(KTX2Loader, "owl-brown.ktx2", "owl-normal.ktx2");
 export class Owl extends Group {
   public override name = "Owl";
-  public collider = new Box3();
-  private _mixer = new AnimationMixer(this);
-  private _flyAction: AnimationAction;
-  private _joystick = new VirtualJoystick();
+  public readonly collider = new Box3();
+  private readonly _mixer = new AnimationMixer(this);
+  private readonly _flyAction: AnimationAction;
+  private readonly _joystick = new VirtualJoystick();
 
   constructor() {
     super();
@@ -50,6 +50,7 @@ export class Owl extends Group {
         if (child.material) {
           child.material.map = map;
           child.material.normalMap = normalMap;
+          child.castShadow = true;
         }
       }
     });
@@ -65,7 +66,7 @@ export class Owl extends Group {
     let idealPosition = 0;
     const halfPlayableWidth = playableWidth / 2;
 
-    this._joystick.connect();
+    this._joystick.connect(document as unknown as HTMLElement);
 
     this._joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => { // TODO signature
       idealPosition = event.direction.x * event.force * halfPlayableWidth;
