@@ -1,6 +1,6 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { createRadixSort, InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BufferGeometry, Mesh, MeshStandardMaterial, Quaternion, Vector3 } from "three";
+import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, Quaternion, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { owlFlyHeight } from "../data/config.js";
 import { CustomEventMap } from "../data/events.js";
@@ -8,15 +8,17 @@ import { CustomEventMap } from "../data/events.js";
 // TODO: use meshLamberMaterial for all?
 
 preload(GLTFLoader, 'coin.glb')
-export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMaterial, CustomEventMap> {
+export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial, CustomEventMap> {
   public override name = "Coin";
   public collectedCount = 0;
 
   constructor() {
     const gltf = get<GLTF>("coin.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
+    const baseMaterial = mesh.material;
 
-    super(mesh.geometry, mesh.material, { createEntities: true });
+
+    super(mesh.geometry, new MeshLambertMaterial({ color: baseMaterial.color }), { createEntities: true });
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 2;
@@ -45,7 +47,7 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMateria
 
     this.on('animate', (e) => quaternion.setFromAxisAngle(yAxis, e.total * 3));
 
-    this.onFrustumEnter = (index, camera) => {
+    this.onFrustumEnter = (index) => {
       const instance = instances[index];
       instance.quaternion.copy(quaternion);
       instance.updateMatrix();

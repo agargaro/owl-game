@@ -1,18 +1,18 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BufferGeometry, Mesh, MeshStandardMaterial } from "three";
+import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { CustomEventMap } from "../data/events.js";
 
 preload(GLTFLoader, 'pine.glb')
-export class Pine extends InstancedMesh2<void, BufferGeometry, MeshStandardMaterial, CustomEventMap> {
+export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMaterial, CustomEventMap> {
   public override name = "Pine";
 
   constructor() {
     const gltf = get<GLTF>("pine.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
 
-    super(mesh.geometry, mesh.material);
+    super(mesh.geometry, new MeshLambertMaterial({ color: 'green' })); // todo remove color
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 1;

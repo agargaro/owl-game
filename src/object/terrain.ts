@@ -15,7 +15,7 @@ export class Terrain extends BatchedMesh {
 
     const { vertexCount, indexCount } = getBatchedMeshCount(geometries);
 
-    super(50, vertexCount, indexCount, new MeshLambertMaterial({ map: baseMaterial.map, side: baseMaterial.side }));
+    super(50, vertexCount, indexCount, new MeshLambertMaterial({ map: baseMaterial.map }));
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 3;

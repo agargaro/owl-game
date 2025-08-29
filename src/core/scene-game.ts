@@ -31,7 +31,6 @@ export class GameScene extends Scene {
     dirLight.shadow.bias = -0.0001;
     dirLight.shadow.normalBias = -0.0001;
     dirLight.shadow.camera.updateProjectionMatrix();
-    dirLight.shadow.blurSamples = 4;
 
 
     this.fog = new Fog(0x8EB65D, 20, cameraFar);
