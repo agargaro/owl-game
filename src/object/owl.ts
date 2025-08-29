@@ -51,7 +51,7 @@ export class Owl extends Group {
         if (material) {
           material.map = map;
           material.normalMap = normalMap;
-          child.castShadow = true;
+          // child.castShadow = true;
         }
       }
     });

@@ -35,7 +35,6 @@ export class Terrain extends BatchedMesh {
       this.addInstance(geometryIndex);
       this.setMatrixAt(i, matrix.makeTranslation(0, 0, i * -terrainSize));
       this.rotateY(Math.PI / 2);
-      // TODO add rotation too?
     }
   }
 }

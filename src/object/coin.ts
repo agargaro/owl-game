@@ -1,6 +1,6 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { createRadixSort, InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BoxGeometry, BufferGeometry, CircleGeometry, Mesh, MeshStandardMaterial, TorusGeometry } from "three";
+import { BufferGeometry, Mesh, MeshStandardMaterial, Quaternion, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { owlFlyHeight } from "../data/config.js";
 import { CustomEventMap } from "../data/events.js";
@@ -22,15 +22,12 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMateria
     this.renderOrder = 2;
     this.castShadow = true;
 
-    // this.addShadowLOD(new TorusGeometry(0.1, 0.1, 4, 4));
-
     this.sortObjects = true;
     this.customSort = createRadixSort(this);
 
     this.addEventListener('collision', (e) => {
       // TODO add particles
       this.collectedCount++;
-      console.log(this.collectedCount); // TODO remove
       this.removeInstances(e.instanceIndex);
     });
 
@@ -42,10 +39,17 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshStandardMateria
 
     this.computeBVH({ margin: 0.1 });
 
-    this.on('animate', (e) => {
-      this.updateInstances((obj) => {
-        obj.rotateY(e.delta * 3);
-      });
-    });
+    const instances = this.instances;
+    const quaternion = new Quaternion();
+    const yAxis = new Vector3(0, 1, 0);
+
+    this.on('animate', (e) => quaternion.setFromAxisAngle(yAxis, e.total * 3));
+
+    this.onFrustumEnter = (index, camera) => {
+      const instance = instances[index];
+      instance.quaternion.copy(quaternion);
+      instance.updateMatrix();
+      return true;
+    }
   }
 }

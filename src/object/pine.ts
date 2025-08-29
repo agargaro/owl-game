@@ -1,6 +1,6 @@
 import { get, preload } from "@three.ez/asset-manager";
 import { InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BoxGeometry, BufferGeometry, ConeGeometry, Mesh, MeshStandardMaterial, TorusGeometry } from "three";
+import { BufferGeometry, Mesh, MeshStandardMaterial } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { CustomEventMap } from "../data/events.js";
 
@@ -17,8 +17,6 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshStandardMater
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 1;
     this.castShadow = true;
-
-    // this.addShadowLOD(new ConeGeometry(2, 4, 8));
 
     this.addEventListener('collision', (e) => {
       this.removeInstances(e.instanceIndex); // remove
