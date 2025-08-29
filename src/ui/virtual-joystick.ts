@@ -46,7 +46,7 @@ export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
   }
 
   dispose() {
-    this.disconnect();
+    this.disconnect(document as unknown as HTMLElement); // Todo improve
     this.root.remove();
   }
 
@@ -68,7 +68,7 @@ export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
     }
 
     this.show();
-    (e.target as Element | Document).setPointerCapture?.(e.pointerId);
+    (e.target as Element).setPointerCapture?.(e.pointerId);
     this.updateFromEvent(e);
     e.preventDefault();
   };
@@ -81,7 +81,7 @@ export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
 
   private onUp = (e: PointerEvent) => {
     if (e.pointerId !== this.pointerId) return;
-    (e.target as Element | Document).releasePointerCapture?.(e.pointerId);
+    (e.target as Element).releasePointerCapture?.(e.pointerId);
     this.pointerId = null;
 
     // snap to center, then fade out

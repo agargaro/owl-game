@@ -1,5 +1,5 @@
 import { get, preload } from "@three.ez/asset-manager";
-import { AnimationAction, AnimationClip, AnimationMixer, Box3, Group } from "three";
+import { AnimationAction, AnimationClip, AnimationMixer, Box3, Group, Mesh, MeshLambertMaterial, Texture } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import { owlFlyHeight, playableWidth } from "../data/config.js";
@@ -10,9 +10,9 @@ preload(KTX2Loader, "owl-brown.ktx2", "owl-normal.ktx2");
 export class Owl extends Group {
   public override name = "Owl";
   public readonly collider = new Box3();
-  private readonly _mixer = new AnimationMixer(this);
-  private readonly _flyAction: AnimationAction;
   private readonly _joystick = new VirtualJoystick();
+  private readonly _mixer = new AnimationMixer(this);
+  private _flyAction: AnimationAction;
 
   constructor() {
     super();
@@ -39,17 +39,18 @@ export class Owl extends Group {
   }
 
   private removeAccesories(): void {
-    const map = get("owl-brown.ktx2");
-    const normalMap = get('owl-normal.ktx2');
+    const map = get<Texture>("owl-brown.ktx2");
+    const normalMap = get<Texture>('owl-normal.ktx2');
 
     this.traverse((child) => {
       if (!child.name.includes("Owl")) {
         child.visible = false;
       } else {
         // TODO refactor
-        if (child.material) {
-          child.material.map = map;
-          child.material.normalMap = normalMap;
+        const material = (child as Mesh).material as MeshLambertMaterial;
+        if (material) {
+          material.map = map;
+          material.normalMap = normalMap;
           child.castShadow = true;
         }
       }
