@@ -7,7 +7,7 @@ import { GameScene } from './core/scene-game.js';
 
 extendBatchedMeshPrototype();
 
-const main = new Main({ showStats: true, enableCursor: false, rendererParameters: { antialias: true } });
+const main = new Main({ showStats: true, enableCursor: false, rendererParameters: { antialias: false } });
 
 main.renderer.shadowMap.enabled = true;
 main.renderer.shadowMap.type = PCFShadowMap;
