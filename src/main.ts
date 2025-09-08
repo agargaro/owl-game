@@ -1,10 +1,13 @@
 import { getLoader, loadPending } from '@three.ez/asset-manager';
+import { extendBatchedMeshPrototype } from '@three.ez/batched-mesh-extensions';
 import { Main } from '@three.ez/main';
 import { PCFShadowMap } from 'three';
 import { DRACOLoader, GLTFLoader, KTX2Loader } from 'three/examples/jsm/Addons.js';
 import { GameScene } from './core/scene-game.js';
 
-const main = new Main({ showStats: true, enableCursor: false });
+extendBatchedMeshPrototype();
+
+const main = new Main({ showStats: true, enableCursor: false, rendererParameters: { antialias: true } });
 
 main.renderer.shadowMap.enabled = true;
 main.renderer.shadowMap.type = PCFShadowMap;

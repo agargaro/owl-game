@@ -1,4 +1,4 @@
-import { get, preload } from "@three.ez/asset-manager";
+import { get, preload, remove } from "@three.ez/asset-manager";
 import { AnimationAction, AnimationClip, AnimationMixer, Box3, Group, Mesh, MeshLambertMaterial, Texture } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
@@ -36,6 +36,8 @@ export class Owl extends Group {
     this.on('beforeanimate', (e) => {
       this.translateZ(e.delta * 10);
     });
+
+    remove("owl.glb", "owl-brown.ktx2", "owl-normal.ktx2"); // TODO put in the package
   }
 
   private removeAccesories(): void {

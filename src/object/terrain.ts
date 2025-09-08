@@ -1,26 +1,36 @@
-import { get, preload } from "@three.ez/asset-manager";
+import { get, preload, remove } from "@three.ez/asset-manager";
 import { createRadixSort, getBatchedMeshCount } from "@three.ez/batched-mesh-extensions";
-import { BatchedMesh, Matrix4, Mesh, MeshLambertMaterial, MeshStandardMaterial } from "three";
+import { BatchedMesh, BufferGeometry, Matrix4, Mesh, MeshStandardMaterial, Texture, TextureLoader } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { terrainSize } from "../data/config.js";
+import { MeshStandardMultiTextureMaterial } from "../material/MeshStandardMultiTextureMaterial.js";
 
 preload(GLTFLoader, 'terrain.glb');
+preload(TextureLoader, 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
 
   constructor() {
     const gltf = get<GLTF>("terrain.glb");
     const geometries = gltf.scene.children.map(child => (child as Mesh).geometry);
-    const baseMaterial = (gltf.scene.children[0] as Mesh).material as MeshStandardMaterial;
-
     const { vertexCount, indexCount } = getBatchedMeshCount(geometries);
 
-    super(50, vertexCount, indexCount, new MeshLambertMaterial({ map: baseMaterial.map }));
+    const textures = [
+      get<Texture>('Light_Bake_Terrain1.png'),
+      get<Texture>('Light_Bake_Terrain2.png'),
+      get<Texture>('Light_Bake_Terrain3.png'),
+      get<Texture>('Light_Bake_Terrain4.png'),
+      get<Texture>('Light_Bake_Terrain5.png'),
+      get<Texture>('Light_Bake_Terrain6.png'),
+    ];
+
+    super(50, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 3;
-    this.castShadow = true;
     this.receiveShadow = true;
+
+    this.initUniformsPerInstance({ fragment: { 'textureIndex': 'float' } });
 
     this.customSort = createRadixSort(this);
 
@@ -33,8 +43,10 @@ export class Terrain extends BatchedMesh {
     for (let i = 0; i < this.maxInstanceCount; i++) {
       const geometryIndex = Math.floor(Math.random() * geometries.length);
       this.addInstance(geometryIndex);
-      this.setMatrixAt(i, matrix.makeTranslation(0, 0, i * -terrainSize));
-      this.rotateY(Math.PI / 2);
+      this.setMatrixAt(i, matrix.setPosition(0, 0, i * -terrainSize));
+      this.setUniformAt(i, 'textureIndex', geometryIndex);
     }
+
+    remove("terrain.glb", 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png'); // TODO put in the package
   }
 }

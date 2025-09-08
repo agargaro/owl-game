@@ -15,7 +15,7 @@ export class GameCamera extends PerspectiveCameraAuto {
   private followOwl(target: Object3D): void {
     const tempPosition = new Vector3();
 
-    this.on('afteranimate', () => {
+    this.on('animate', () => {
       tempPosition.copy(target.position);
 
       this.position.addVectors(tempPosition, this.targetOffset);
