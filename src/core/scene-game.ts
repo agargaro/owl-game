@@ -1,7 +1,8 @@
-import { AmbientLight, DirectionalLight, Fog, Scene, Vector3 } from "three";
+import { AmbientLight, DirectionalLight, Fog, Scene } from "three";
 import { CollisionManager } from "../controller/collision-controller.js";
 import { acceleration, cameraFar, maxSpeed } from "../data/config.js";
 import { Coin } from "../object/coin.js";
+import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
 import { Pine } from "../object/pine.js";
 import { Terrain } from "../object/terrain.js";
@@ -12,6 +13,7 @@ export class GameScene extends Scene {
   public owl = new Owl();
   public coin = new Coin();
   public pine = new Pine();
+  public items = new Items();
   public camera = new GameCamera(this.owl);
   public collisionManager = new CollisionManager(this);
   public ambientLight = new AmbientLight('white', 0.5);
@@ -20,7 +22,7 @@ export class GameScene extends Scene {
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.coin, this.pine);
+    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.coin, this.pine, this.items);
 
     const dirLight = this.directionalLight;
     const shadowCamera = dirLight.shadow.camera;
