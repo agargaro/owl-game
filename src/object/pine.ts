@@ -24,7 +24,7 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMateri
     });
 
     this.addInstances(50, (obj, index) => {
-      const laneIndex = (Math.floor(Math.random() * 3) - 1) * 2;
+      const laneIndex = (Math.floor(Math.random() * 3) - 1) * 2; // TODO use cellSize
       obj.position.set(laneIndex, 0, -index * 20);
     });
 

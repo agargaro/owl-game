@@ -5,7 +5,8 @@ import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
 import { Pine } from "../object/pine.js";
 
-export class CollisionManager {
+export class CollisionController {
+  public enabled = true;
   private _owl: Owl;
   private _coin: Coin;
   private _pine: Pine;
@@ -33,6 +34,8 @@ export class CollisionManager {
       coin.dispatchEvent({ type: 'collision', instanceIndex });
       return true;
     });
+
+    if (!this.enabled) return;
 
     pine.bvh.intersectBox(owlBox, (instanceIndex) => {
       pine.dispatchEvent({ type: 'collision', instanceIndex });
