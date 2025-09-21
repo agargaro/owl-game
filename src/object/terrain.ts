@@ -1,14 +1,16 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import { createRadixSort, getBatchedMeshCount } from "@three.ez/batched-mesh-extensions";
-import { BatchedMesh, BufferGeometry, Matrix4, Mesh, MeshStandardMaterial, Texture, TextureLoader } from "three";
+import { BatchedMesh, Matrix4, Mesh, Texture, TextureLoader } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { terrainSize } from "../data/config.js";
+import { chunkRows } from "../data/config.js";
 import { MeshStandardMultiTextureMaterial } from "../material/MeshStandardMultiTextureMaterial.js";
+import { rand } from "../utils/random.js";
 
 preload(GLTFLoader, 'terrain.glb');
 preload(TextureLoader, 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
+  private geometryCount = 6;
 
   constructor() {
     const gltf = get<GLTF>("terrain.glb");
@@ -24,29 +26,28 @@ export class Terrain extends BatchedMesh {
       get<Texture>('Light_Bake_Terrain6.png'),
     ];
 
-    super(50, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
+    super(4, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 3;
     this.receiveShadow = true;
+    this.frustumCulled = false;
 
     this.initUniformsPerInstance({ fragment: { 'textureIndex': 'float' } });
-
-    this.customSort = createRadixSort(this);
 
     for (const geometry of geometries) {
       this.addGeometry(geometry);
     }
 
-    const matrix = new Matrix4();
-
-    for (let i = 0; i < this.maxInstanceCount; i++) {
-      const geometryIndex = Math.floor(Math.random() * geometries.length);
-      this.addInstance(geometryIndex);
-      this.setMatrixAt(i, matrix.setPosition(0, 0, i * -terrainSize));
-      this.setUniformAt(i, 'textureIndex', geometryIndex);
-    }
-
     remove("terrain.glb", 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png'); // TODO put in the package
   }
+
+  public generateChunk(chunkId: number): void {
+    const geometryIndex = rand(this.geometryCount - 1);
+    this.addInstance(geometryIndex);
+    this.setMatrixAt(chunkId, matrix.setPosition(0, 0, chunkId * -chunkRows - chunkRows / 2));
+    this.setUniformAt(chunkId, 'textureIndex', geometryIndex);
+  }
 }
+
+const matrix = new Matrix4();

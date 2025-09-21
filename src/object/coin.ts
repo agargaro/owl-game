@@ -17,14 +17,12 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
     const baseMaterial = mesh.material;
 
-
     super(mesh.geometry, new MeshLambertMaterial({ color: baseMaterial.color }), { createEntities: true });
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 2;
     this.castShadow = true;
-
-    this.sortObjects = false;
+    this.frustumCulled = false;
 
     this.addEventListener('collision', (e) => {
       // TODO add particles
@@ -32,22 +30,15 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
       this.removeInstances(e.instanceIndex);
     });
 
-    this.addInstances(1000, (obj, index) => {
-      const laneIndex = Math.floor(Math.random() * 3) - 1;
-      obj.position.set(laneIndex * 2, owlFlyHeight, -index * cellSize);
-      obj.scale.divideScalar(1.5);
-    });
-
     this.computeBVH({ margin: 0.1 });
 
-    const instances = this.instances;
     const quaternion = new Quaternion();
     const yAxis = new Vector3(0, 1, 0);
 
     this.on('animate', (e) => quaternion.setFromAxisAngle(yAxis, e.total * 3));
 
     this.onFrustumEnter = (index) => {
-      const instance = instances[index];
+      const instance = this.instances[index];
       instance.quaternion.copy(quaternion);
       instance.updateMatrix();
       return true;

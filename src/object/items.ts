@@ -17,6 +17,7 @@ export class Items extends BatchedMesh {
     this.matrixWorldAutoUpdate = false;
     // this.renderOrder = 3;
     this.castShadow = true;
+    this.frustumCulled = false;
 
     this.customSort = createRadixSort(this);
 

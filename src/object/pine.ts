@@ -17,15 +17,11 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMateri
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 1;
     this.castShadow = true;
+    this.frustumCulled = false;
 
     this.addEventListener('collision', (e) => {
       this.removeInstances(e.instanceIndex); // remove
       // TODO end game? should be moved
-    });
-
-    this.addInstances(50, (obj, index) => {
-      const laneIndex = (Math.floor(Math.random() * 3) - 1) * 2; // TODO use cellSize
-      obj.position.set(laneIndex, 0, -index * 20);
     });
 
     this.computeBVH();

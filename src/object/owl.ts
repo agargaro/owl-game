@@ -17,6 +17,7 @@ export class Owl extends Group {
   constructor() {
     super();
     this.renderOrder = 0;
+    this.frustumCulled = false;
 
     const gltf = get<GLTF>("owl.glb");
     this.add(...gltf.scene.children);
