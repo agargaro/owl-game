@@ -1,8 +1,8 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
-import { createRadixSort, getBatchedMeshCount } from "@three.ez/batched-mesh-extensions";
-import { BatchedMesh, Matrix4, Mesh, Texture, TextureLoader } from "three";
+import { getBatchedMeshCount } from "@three.ez/batched-mesh-extensions";
+import { BatchedMesh, Matrix4, Mesh, Texture, TextureLoader, WebGLCoordinateSystem } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { chunkRows } from "../data/config.js";
+import { chunkInstanceCount, chunkRows } from "../data/config.js";
 import { MeshStandardMultiTextureMaterial } from "../material/MeshStandardMultiTextureMaterial.js";
 import { rand } from "../utils/random.js";
 
@@ -10,7 +10,8 @@ preload(GLTFLoader, 'terrain.glb');
 preload(TextureLoader, 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
-  private geometryCount = 6;
+  declare private _geometryCount: number;
+  private _lastId = 0;
 
   constructor() {
     const gltf = get<GLTF>("terrain.glb");
@@ -26,14 +27,17 @@ export class Terrain extends BatchedMesh {
       get<Texture>('Light_Bake_Terrain6.png'),
     ];
 
-    super(4, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
+    super(chunkInstanceCount, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 3;
     this.receiveShadow = true;
     this.frustumCulled = false;
 
-    this.initUniformsPerInstance({ fragment: { 'textureIndex': 'float' } });
+    // we prefer to fetch textureIndex in the vertexShader instead of fragmentShader in this case
+    this.initUniformsPerInstance({ vertex: { 'textureIndex': 'float' } });
+
+    this.computeBVH(WebGLCoordinateSystem);
 
     for (const geometry of geometries) {
       this.addGeometry(geometry);
@@ -42,11 +46,21 @@ export class Terrain extends BatchedMesh {
     remove("terrain.glb", 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png'); // TODO put in the package
   }
 
-  public generateChunk(chunkId: number): void {
-    const geometryIndex = rand(this.geometryCount - 1);
-    this.addInstance(geometryIndex);
-    this.setMatrixAt(chunkId, matrix.setPosition(0, 0, chunkId * -chunkRows - chunkRows / 2));
-    this.setUniformAt(chunkId, 'textureIndex', geometryIndex);
+  public generateChunk(chunkId: number): number {
+    const geometryIndex = rand(this._geometryCount - 1);
+    const id = this.addInstance(geometryIndex);
+    this.setMatrixAt(id, matrix.setPosition(0, 0, chunkId * -chunkRows - chunkRows / 2));
+    this.setUniformAt(id, 'textureIndex', geometryIndex);
+    this.bvh.insert(id);
+    return id;
+  }
+
+  public removeLastChunk(): number {
+    const id = this._lastId++;
+    this._lastId %= this.maxInstanceCount;
+    this.deleteInstance(id);
+    this.bvh.delete(id);
+    return id;
   }
 }
 

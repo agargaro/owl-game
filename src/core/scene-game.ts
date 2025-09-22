@@ -31,11 +31,6 @@ export class GameScene extends Scene {
 
     this.setupLight();
 
-    this.spawnController.generateChunk();
-    this.spawnController.generateChunk();
-    this.spawnController.generateChunk();
-    this.spawnController.generateChunk();
-
     this.fog = new Fog(0x8EB65D, 20, cameraFar);
     this.background = this.fog.color;
 

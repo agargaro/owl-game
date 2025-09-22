@@ -2,7 +2,6 @@ import { get, preload, remove } from "@three.ez/asset-manager";
 import { InstancedMesh2 } from "@three.ez/instanced-mesh";
 import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, Quaternion, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { cellSize, owlFlyHeight } from "../data/config.js";
 import { CustomEventMap } from "../data/events.js";
 
 // TODO: use meshLamberMaterial for all?
@@ -17,7 +16,11 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
     const baseMaterial = mesh.material;
 
-    super(mesh.geometry, new MeshLambertMaterial({ color: baseMaterial.color }), { createEntities: true });
+    // const maxSpawnPerRow = 2;
+    // const capacity = chunkInstanceCount * (chunkRows / cellSize) * maxSpawnPerRow; // TODO add check if resize buffer
+    const capacity = 200; // TODO add check if resize buffer
+
+    super(mesh.geometry, new MeshLambertMaterial({ color: baseMaterial.color }), { createEntities: true, capacity });
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 2;

@@ -32,19 +32,20 @@ export class CollisionController {
 
     coin.bvh.intersectBox(owlBox, (instanceIndex) => {
       coin.dispatchEvent({ type: 'collision', instanceIndex });
-      return true;
+      return false;
     });
 
     if (!this.enabled) return;
 
     pine.bvh.intersectBox(owlBox, (instanceIndex) => {
+      console.log('deleted', instanceIndex)
       pine.dispatchEvent({ type: 'collision', instanceIndex });
-      return true;
+      return false;
     });
 
-    items.bvh.intersectBox(owlBox, (instanceIndex) => {
-      items.dispatchEvent({ type: 'collision', instanceIndex });
-      return true;
-    });
+    // items.bvh.intersectBox(owlBox, (instanceIndex) => {
+    //   items.dispatchEvent({ type: 'collision', instanceIndex });
+    //   return false;
+    // });
   }
 }
