@@ -29,7 +29,7 @@ export class Items extends BatchedMesh {
       const itemIndex = this.getGeometryIdAt(e.instanceIndex);
       this.dispatchEvent({ type: 'active', itemIndex });
 
-      this.deleteInstance(e.instanceIndex);
+      this.setVisibleAt(e.instanceIndex, false);
       this.bvh.delete(e.instanceIndex); // TODO improve
     });
 

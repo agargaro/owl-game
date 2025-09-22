@@ -1,5 +1,5 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
-import { InstancedMesh2 } from "@three.ez/instanced-mesh";
+import { createRadixSort, InstancedMesh2 } from "@three.ez/instanced-mesh";
 import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { CustomEventMap } from "../data/events.js";
@@ -23,25 +23,17 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMateri
     this.renderOrder = 1;
     this.castShadow = true;
     this.frustumCulled = false;
+    this.sortObjects = true;
+
+    this.customSort = createRadixSort(this as InstancedMesh2<any>); // TODO fix def
 
     this.addEventListener('collision', (e) => {
-      this.removeInstances(e.instanceIndex); // remove
+      this.setVisibilityAt(e.instanceIndex, false);
       // TODO end game? should be moved
     });
 
     this.computeBVH();
 
     remove("pine.glb"); // TODO put in the package
-
-    // const onBeforeRenderBase = this.onBeforeRender;
-    // this.onBeforeRender = (...args) => {
-    //   onBeforeRenderBase.call(this, ...args);
-
-    //   if (this.instanceIndex) {
-    //     const cloned = [...this.instanceIndex.array];
-    //     cloned.length = this.count;
-    //     console.log(cloned.concat().sort((a, b) => a - b).join(', '));
-    //   }
-    // };
   }
 }

@@ -30,7 +30,7 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
     this.addEventListener('collision', (e) => {
       // TODO add particles
       this.collectedCount++;
-      this.removeInstances(e.instanceIndex);
+      this.setVisibilityAt(e.instanceIndex, false);
     });
 
     this.computeBVH({ margin: 0.1 });
