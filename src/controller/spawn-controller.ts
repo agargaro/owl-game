@@ -64,7 +64,7 @@ export class SpawnController {
     pineInstances.length = 0;
 
     for (let i = chunkId * chunkRows / cellSize, l = (chunkId + 1) * chunkRows / cellSize; i < l; i++) {
-      const obstacleCount = i % 4 == 0 ? rand(1, 2) : 0;
+      const obstacleCount = i % 5 == 0 ? rand(1, 2) : 0;
       const coinCount = MathUtils.clamp(rand(3) - obstacleCount, 1, 2); // if 1 obstacle, 25% change of 2 cois
 
       pine.addInstances(obstacleCount, (obj, index) => {
