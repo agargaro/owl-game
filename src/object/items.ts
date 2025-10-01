@@ -25,13 +25,14 @@ export class Items extends BatchedMesh {
 
     const matrix = new Matrix4();
 
-    this.addEventListener('collision', (e) => { // TODO fix d.ts
-      const itemIndex = this.getGeometryIdAt(e.instanceIndex);
-      this.dispatchEvent({ type: 'active', itemIndex });
+    // TODO readd
+    // this.addEventListener('collision', (e) => { // TODO fix d.ts
+    //   const itemIndex = this.getGeometryIdAt(e.instanceIndex);
+    //   this.dispatchEvent({ type: 'active', itemIndex });
 
-      this.setVisibleAt(e.instanceIndex, false);
-      this.bvh.delete(e.instanceIndex); // TODO improve
-    });
+    //   this.setVisibleAt(e.instanceIndex, false);
+    //   this.bvh.delete(e.instanceIndex); // TODO improve
+    // });
 
     for (let i = 0; i < this.maxInstanceCount; i++) {
       const geometryIndex = 0;

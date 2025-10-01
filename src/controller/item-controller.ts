@@ -1,6 +1,6 @@
 import { BatchedMesh, BufferGeometry, Material, Mesh } from "three";
 import { GameScene } from "../core/scene-game.js";
-import { cellSize, owlFlyHeight } from "../data/config.js";
+import { cellSize, owlFlyHeight, rocketCoinCount } from "../data/config.js";
 import { ItemEventMap } from "../data/events.js";
 import { Items } from "../object/items.js";
 
@@ -27,11 +27,11 @@ export class ItemController {
       scene.collisionController.enabled = false;
       coin.disposeBVH();
       coin.clearInstances();
-      coin.addInstances(99, (obj, index) => {
+      coin.addInstances(rocketCoinCount, (obj, index) => {
         obj.position.set((index % 3 - 1) * 2, owlFlyHeight, spawnPoint - Math.floor(index / 3) * cellSize);
         obj.scale.divideScalar(1.5); // TODO scale the coin model
-      }); // put 99 in config
-      coin.computeBVH({ margin: 0.1 });
+      })
+      coin.computeBVH();
 
       pine.disposeBVH();
       pine.clearInstances();

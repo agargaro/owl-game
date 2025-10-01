@@ -1,6 +1,6 @@
 import { MathUtils } from "three";
 import { GameScene } from "../core/scene-game.js";
-import { cellSize, changeChunkDistance, chunkRows, owlFlyHeight } from "../data/config.js";
+import { cellSize, changeChunkDistance, chunkRows, owlFlyHeight, treeSpawnRatio } from "../data/config.js";
 import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
@@ -64,19 +64,21 @@ export class SpawnController {
     pineInstances.length = 0;
 
     for (let i = chunkId * chunkRows / cellSize, l = (chunkId + 1) * chunkRows / cellSize; i < l; i++) {
-      const obstacleCount = i % 5 == 0 ? rand(1, 2) : 0;
-      const coinCount = MathUtils.clamp(rand(3) - obstacleCount, 1, 2); // if 1 obstacle, 25% change of 2 cois
+      const obstacleCount = i % treeSpawnRatio == 0 ? rand(1, 2) : 0;
+      const coinCount = MathUtils.clamp(rand(3) - obstacleCount, 1, 2); // if 1 obstacle, 25% change of 2 coins
 
       pine.addInstances(obstacleCount, (obj, index) => {
         const colIndex = bucket.pop();
         obj.position.set(colIndex * cellSize, 0, -i * cellSize);
+        obj.scale.divideScalar(4.5);
+        obj.rotateX(Math.PI / -2);
         pineInstances.push(index);
       });
 
       coin.addInstances(coinCount, (obj, index) => {
         const colIndex = bucket.pop();
         obj.position.set(colIndex * cellSize, owlFlyHeight, -i * cellSize);
-        obj.scale.divideScalar(1.5); // TODO
+        obj.scale.divideScalar(1.5);
         coinInstances.push(index);
       });
 

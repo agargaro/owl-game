@@ -38,9 +38,8 @@ export class CollisionController {
     if (!this.enabled) return;
 
     pine.bvh.intersectBox(owlBox, (instanceIndex) => {
-      console.log('deleted', instanceIndex)
       pine.dispatchEvent({ type: 'collision', instanceIndex });
-      return false;
+      return true; // stop checking other pines, it's game over
     });
 
     // items.bvh.intersectBox(owlBox, (instanceIndex) => {
