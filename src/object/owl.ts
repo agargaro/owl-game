@@ -76,6 +76,9 @@ export class Owl extends Group {
       idealPosition = event.direction.x * event.force * halfPlayableWidth;
       this.rotation.z = -(this.position.x - idealPosition) * 0.2;
     });
+    this._joystick.addEventListener('release', (event) => {
+      idealPosition = 0;
+    });
 
     this.on("animate", (e) => {
       const t = 1 - 0.001 ** e.delta;

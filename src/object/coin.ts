@@ -2,13 +2,13 @@ import { get, preload, remove } from "@three.ez/asset-manager";
 import { InstancedMesh2 } from "@three.ez/instanced-mesh";
 import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, Quaternion, Vector3 } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { CustomEventMap } from "../data/events.js";
 import { cellSize, chunkInstanceCount, chunkRows, rocketCoinCount } from "../data/config.js";
+import { CoinEventMap } from "../data/events.js";
 
 // TODO: use meshLamberMaterial for all?
 
 preload(GLTFLoader, 'coin.glb')
-export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial, CustomEventMap> {
+export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial, CoinEventMap> {
   public override name = "Coin";
   public collectedCount = 0;
 
@@ -31,6 +31,7 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
       // TODO add particles
       this.collectedCount++;
       this.setVisibilityAt(e.instanceIndex, false);
+      this.dispatchEvent({ type: 'collected', count: this.collectedCount });
     });
 
     this.computeBVH();

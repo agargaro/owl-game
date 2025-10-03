@@ -31,7 +31,9 @@ export class CollisionController {
     owlBox.translate(owl.position);
 
     coin.bvh.intersectBox(owlBox, (instanceIndex) => {
-      coin.dispatchEvent({ type: 'collision', instanceIndex });
+      if (coin.getVisibilityAt(instanceIndex)) { // TODO improve
+        coin.dispatchEvent({ type: 'collision', instanceIndex });
+      }
       return false;
     });
 

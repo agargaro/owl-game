@@ -2,11 +2,11 @@ import { get, preload, remove } from "@three.ez/asset-manager";
 import { createRadixSort, InstancedMesh2 } from "@three.ez/instanced-mesh";
 import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
-import { CustomEventMap } from "../data/events.js";
+import { DefaultEventMap } from "../data/events.js";
 import { cellSize, chunkInstanceCount, chunkRows } from "../data/config.js";
 
 preload(GLTFLoader, 'pine.glb')
-export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMaterial, CustomEventMap> {
+export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMaterial, DefaultEventMap> {
   public override name = "Pine";
 
   constructor() {

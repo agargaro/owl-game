@@ -5,13 +5,9 @@ type MoveMsg = { direction: Vector2; force: number };
 
 let joystickID = 0;
 
-export const isMobile = () => {
-  return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone|webOS/i.test(navigator.userAgent);
-};
-
-export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
+export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg, release: {} }> {
   radius = 50;          //  in pixel
-  deadzone = 0.08;      // 0..1
+  deadzone = 0;      // 0..1
   fadeMs = 120;         // show/hide
   analogResetMs = 90;          // analog snap
   fixedCenter: { x: number; y: number } | null = null; // useefull to fix joystick
@@ -88,6 +84,7 @@ export class VirtualJoystick extends EventDispatcher<{ move: MoveMsg }> {
     this.analog.style.transform = `translate(0px, 0px)`;
     setTimeout(() => this.hide(), this.analogResetMs);
     e.preventDefault();
+    this.dispatchEvent({ type: "release" });
   };
 
   private updateFromEvent(e: PointerEvent) {
