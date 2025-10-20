@@ -68,22 +68,25 @@ export class Owl extends Group {
 
   private bindInteraction(): void {
     let idealPosition = 0;
+    let idealRotation = 0;
     const halfPlayableWidth = playableWidth / 2;
 
     this._joystick.connect(document as unknown as HTMLElement);
 
     this._joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => { // TODO signature
       idealPosition = event.direction.x * event.force * halfPlayableWidth;
-      this.rotation.z = -(this.position.x - idealPosition) * 0.2;
+      idealRotation = -(this.position.x - idealPosition) * 0.2;
     });
     this._joystick.addEventListener('release', (event) => {
       idealPosition = 0;
+      idealRotation = -(this.position.x * 0.2);
     });
 
     this.on("animate", (e) => {
       const t = 1 - 0.001 ** e.delta;
       this.position.x = lerp(this.position.x, idealPosition, t);
-      this.rotation.z = lerp(this.rotation.z, 0, t * 0.2);
+      this.rotation.z = lerp(idealRotation, 0, t);
+      idealRotation = this.rotation.z;
     });
   }
 }
