@@ -9,6 +9,7 @@ export class CollisionController {
   public enabled = true;
   private _owl: Owl;
   private _coin: Coin;
+  private _scene: GameScene;
   private _pine: Pine;
   private _items: Items;
   private _owlBox = new Box3();
@@ -18,6 +19,7 @@ export class CollisionController {
     this._coin = scene.coin;
     this._pine = scene.pine;
     this._items = scene.items;
+    this._scene = scene;
   }
 
   public update(): void {
@@ -41,6 +43,8 @@ export class CollisionController {
 
     pine.bvh.intersectBox(owlBox, (instanceIndex) => {
       pine.dispatchEvent({ type: 'collision', instanceIndex });
+      //TODO: fix dts 
+      this._scene.dispatchEvent({ type: 'gameover' } as any);
       return true; // stop checking other pines, it's game over
     });
 

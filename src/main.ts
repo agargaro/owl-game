@@ -4,7 +4,7 @@ import { Main } from '@three.ez/main';
 import { PCFShadowMap } from 'three';
 import { DRACOLoader, GLTFLoader, KTX2Loader } from 'three/examples/jsm/Addons.js';
 import { GameScene } from './core/scene-game.js';
-import { GameStats } from './ui/game-stats.js';
+import { GameHUD } from './ui/game-hud.js';
 
 extendBatchedMeshPrototype();
 
@@ -23,7 +23,7 @@ ktx2Loader.detectSupport(main.renderer);
 await loadPending();
 
 const scene = new GameScene();
-new GameStats(scene);
+new GameHUD(scene);
 
 main.createView({ scene, camera: scene.camera, enabled: false });
 
