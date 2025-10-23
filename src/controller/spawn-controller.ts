@@ -36,7 +36,7 @@ export class SpawnController {
       if (this._lastOwlDepth - owlDepth > changeChunkDistance) {
         this._lastOwlDepth = Math.ceil(owlDepth);
         this.removeChunk();
-        this.generateChunk();
+        this.generateChunk(true);
       }
     });
   }
@@ -45,11 +45,12 @@ export class SpawnController {
     for (let i = 0; i < this._terrain.maxInstanceCount; i++) {
       this._chunkCoinInstances.push([]);
       this._chunkPineInstances.push([]);
-      this.generateChunk();
+      const spawnObjects = i > 0; // no objects on first 2 chunks
+      this.generateChunk(spawnObjects);
     }
   }
 
-  private generateChunk(): void {
+  private generateChunk(spawnObjects: boolean): void {
     const coin = this._coin;
     const pine = this._pine;
     const chunkId = this._chunkId++;
@@ -57,14 +58,18 @@ export class SpawnController {
 
     // TODO add item
 
-    const instanceId = this._terrain.generateChunk(chunkId);
+    const geometryIndex = rand((this._terrain as any)._geometryCount - 1); // TODO fix cast
+    const instanceId = this._terrain.generateChunk(geometryIndex, chunkId);
+
+    if (!spawnObjects) return;
+
     const coinInstances = this._chunkCoinInstances[instanceId];
     const pineInstances = this._chunkPineInstances[instanceId];
     coinInstances.length = 0;
     pineInstances.length = 0;
 
     for (let i = chunkId * chunkRows / cellSize, l = (chunkId + 1) * chunkRows / cellSize; i < l; i++) {
-      const obstacleCount = i % treeSpawnRatio == 0 ? rand(1, 2) : 0;
+      const obstacleCount = (i % treeSpawnRatio == 0) && !this.hasWater(geometryIndex, i) ? rand(1, 2) : 0;
       const coinCount = MathUtils.clamp(rand(3) - obstacleCount, 1, 2); // if 1 obstacle, 25% change of 2 coins
 
       pine.addInstances(obstacleCount, (obj, index) => {
@@ -84,8 +89,6 @@ export class SpawnController {
 
       bucket.clear();
     }
-
-    console.log(`${coin.instancesCount} coins, ${pine.instancesCount} pines in chunk ${chunkId}`);
   }
 
   private removeChunk(): void {
@@ -98,5 +101,18 @@ export class SpawnController {
 
     coin.removeInstances(...coinInstances);
     pine.removeInstances(...pineInstances);
+  }
+
+  // this can be improved
+  private hasWater(geometryIndex: number, rowIndex: number): boolean {
+    if (geometryIndex === 3) {
+      if (rowIndex % (chunkRows / 2) === 5) return true;
+    } else if (geometryIndex === 4) {
+      if (rowIndex % (chunkRows / 2) === 5) return true;
+      if (rowIndex % (chunkRows / 2) === 15) return true;
+    } else if (geometryIndex === 5) {
+      if (rowIndex % (chunkRows / 2) === 10) return true;
+    }
+    return false;
   }
 }

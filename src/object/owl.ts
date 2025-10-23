@@ -28,6 +28,7 @@ export class Owl extends Group {
     this.scale.divideScalar(15);
     this.collider.setFromObject(this);
     this.position.y = owlFlyHeight;
+    this.position.z = -15; // to wait 3 seconds before obstacles spawn
 
     this.initAnimation(gltf.animations);
     this._flyAction.play();

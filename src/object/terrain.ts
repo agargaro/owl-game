@@ -46,11 +46,10 @@ export class Terrain extends BatchedMesh {
     remove("terrain.glb", 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png'); // TODO put in the package
   }
 
-  public generateChunk(chunkId: number): number {
-    const geometryIndex = rand(this._geometryCount - 1);
-    const id = this.addInstance(geometryIndex);
+  public generateChunk(geometryId: number, chunkId: number): number {
+    const id = this.addInstance(geometryId);
     this.setMatrixAt(id, matrix.setPosition(0, 0, chunkId * -chunkRows - chunkRows / 2));
-    this.setUniformAt(id, 'textureIndex', geometryIndex);
+    this.setUniformAt(id, 'textureIndex', geometryId);
     this.bvh.insert(id);
     return id;
   }

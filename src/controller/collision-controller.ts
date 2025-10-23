@@ -42,7 +42,6 @@ export class CollisionController {
     if (!this.enabled) return;
 
     pine.bvh.intersectBox(owlBox, (instanceIndex) => {
-      pine.dispatchEvent({ type: 'collision', instanceIndex });
       //TODO: fix dts 
       this._scene.dispatchEvent({ type: 'gameover' } as any);
       return true; // stop checking other pines, it's game over

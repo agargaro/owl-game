@@ -27,11 +27,6 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMateri
 
     this.customSort = createRadixSort(this as InstancedMesh2<any>); // TODO fix def
 
-    this.addEventListener('collision', (e) => {
-      this.setVisibilityAt(e.instanceIndex, false);
-      // TODO end game? should be moved
-    });
-
     this.computeBVH();
 
     remove("pine.glb"); // TODO put in the package
