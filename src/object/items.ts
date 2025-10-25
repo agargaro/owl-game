@@ -12,7 +12,7 @@ export class Items extends BatchedMesh {
     const rocket = get<GLTF>("rocket.glb").scene.children[0].children[0].children[0].children[0] as Mesh;
     const { vertexCount, indexCount } = getBatchedMeshCount([rocket.geometry]);
 
-    super(10, vertexCount, indexCount, new MeshLambertMaterial());
+    super(1, vertexCount, indexCount, new MeshLambertMaterial());
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     // this.renderOrder = 3;
@@ -25,21 +25,20 @@ export class Items extends BatchedMesh {
 
     const matrix = new Matrix4();
 
-    // TODO readd
-    // this.addEventListener('collision', (e) => { // TODO fix d.ts
-    //   const itemIndex = this.getGeometryIdAt(e.instanceIndex);
-    //   this.dispatchEvent({ type: 'active', itemIndex });
-
-    //   this.setVisibleAt(e.instanceIndex, false);
-    //   this.bvh.delete(e.instanceIndex); // TODO improve
-    // });
+    this.addEventListener('collision' as any, (e) => { // TODO fix d.ts
+      const itemIndex = this.getGeometryIdAt(e.instanceIndex);
+      this.setVisibleAt(e.instanceIndex, false);
+      this.dispatchEvent({ type: 'active' as any, itemIndex });  // TODO fix d.ts
+    });
 
     for (let i = 0; i < this.maxInstanceCount; i++) {
       const geometryIndex = 0;
       // const geometryIndex = Math.floor(Math.random() * geometries.length);
       this.addInstance(geometryIndex);
-      const laneIndex = (Math.floor(Math.random() * 3) - 1) * 2;
-      this.setMatrixAt(i, matrix.makeScale(0.1, 0.1, 0.1).setPosition(laneIndex, owlFlyHeight, (-i - 1) * cellSize * 45));
+      // const laneIndex = (Math.floor(Math.random() * 3) - 1) * 2;
+      const laneIndex = 0; // force center lane for now
+      // TODO 20 is the start... put in the config?
+      this.setMatrixAt(i, matrix.makeScale(0.1, 0.1, 0.1).setPosition(laneIndex, owlFlyHeight, (-i - 1) * cellSize * (20 + 42)));
     }
 
     this.computeBVH(WebGLCoordinateSystem);

@@ -47,9 +47,9 @@ export class CollisionController {
       return true; // stop checking other pines, it's game over
     });
 
-    // items.bvh.intersectBox(owlBox, (instanceIndex) => {
-    //   items.dispatchEvent({ type: 'collision', instanceIndex });
-    //   return false;
-    // });
+    items.bvh.intersectBox(owlBox, (instanceIndex) => {
+      items.dispatchEvent({ type: 'collision' as any, instanceIndex });
+      return false;
+    });
   }
 }

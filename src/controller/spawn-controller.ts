@@ -81,7 +81,12 @@ export class SpawnController {
       });
 
       coin.addInstances(coinCount, (obj, index) => {
-        const colIndex = bucket.pop();
+        let colIndex = bucket.pop();
+
+        // if (-i == (-20 - 42) && colIndex === 0) { // TODO this can be improved 
+        //   colIndex = bucket.pop();
+        // }
+
         obj.position.set(colIndex * cellSize, owlFlyHeight, -i * cellSize);
         obj.scale.divideScalar(1.5);
         coinInstances.push(index);
