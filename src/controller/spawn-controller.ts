@@ -74,8 +74,6 @@ export class SpawnController {
 
     const coinInstances = this._chunkCoinInstances[instanceId];
     const pineInstances = this._chunkPineInstances[instanceId];
-    coinInstances.length = 0;
-    pineInstances.length = 0;
 
     for (let i = chunkId * chunkRows / cellSize, l = (chunkId + 1) * chunkRows / cellSize; i < l; i++) {
       const obstacleCount = (i % treeSpawnRatio == 0) && !this.hasWater(geometryIndex, i) ? rand(1, 2) : 0;
@@ -110,6 +108,8 @@ export class SpawnController {
     const pineInstances = this._chunkPineInstances[instanceId];
     this._coin.removeInstances(...coinInstances);
     this._pine.removeInstances(...pineInstances);
+    coinInstances.length = 0;
+    pineInstances.length = 0;
   }
 
   // this can be improved
