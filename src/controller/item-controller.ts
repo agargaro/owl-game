@@ -14,30 +14,13 @@ export class ItemController {
 
   private bindItemEvents(): void {
     const scene = this._scene;
-    const owl = scene.owl;
-    const items = scene.items as Mesh<BufferGeometry, Material, ItemEventMap>;
-    const coin = scene.coin;
-    const pine = scene.pine;
+    const items = scene.items;
 
-    items.addEventListener('active', (e) => {
+    items.addEventListener('active' as any, (e) => { // TODO fix d.ts
       // const itemIndex = e.itemIndex; // we have only rocket here
-
-      // rocket logic
-      const spawnPoint = owl.position.z - Math.floor(owl.position.z % cellSize) - 5 * cellSize; // 2 cells after
-      scene.collisionController.enabled = false;
-      coin.disposeBVH();
-      coin.clearInstances();
-      coin.addInstances(rocketCoinCount, (obj, index) => {
-        obj.position.set((index % 3 - 1) * 2, owlFlyHeight, spawnPoint - Math.floor(index / 3) * cellSize);
-        obj.scale.divideScalar(1.5); // TODO scale the coin model
-      })
-      coin.computeBVH();
-
-      pine.disposeBVH();
-      pine.clearInstances();
-
-      // (items as Items).bvh = null; // TODO add dispose
-      // (items as Items).deleteInstance(); // remove
+      scene.isUsingRocket = true;
+      const itemPosition = items.getPositionAt(0); // 0 because only one item for now
+      scene.spawnController.spawnCoinsItem(itemPosition);
     });
   }
 }

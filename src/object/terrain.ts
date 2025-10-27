@@ -10,8 +10,8 @@ preload(GLTFLoader, 'terrain.glb');
 preload(TextureLoader, 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
+  public lastId = 0;
   declare private _geometryCount: number;
-  private _lastId = 0;
 
   constructor() {
     const gltf = get<GLTF>("terrain.glb");
@@ -55,11 +55,15 @@ export class Terrain extends BatchedMesh {
   }
 
   public removeLastChunk(): number {
-    const id = this._lastId++;
-    this._lastId %= this.maxInstanceCount;
+    const id = this.lastId++;
+    this.lastId %= this.maxInstanceCount;
     this.deleteInstance(id);
     this.bvh.delete(id);
     return id;
+  }
+
+  public getNextChunkId(): number {
+    return (this.lastId + 1) % this.maxInstanceCount;
   }
 }
 

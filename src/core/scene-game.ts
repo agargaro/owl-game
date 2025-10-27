@@ -23,6 +23,7 @@ export class GameScene extends Scene {
   public itemController = new ItemController(this);
   public ambientLight = new AmbientLight('white', 0.5);
   public directionalLight = new DirectionalLight('white', 2.5);
+  public isUsingRocket = false;
 
   constructor() {
     super();
@@ -36,6 +37,10 @@ export class GameScene extends Scene {
 
     this.on('beforeanimate', (e) => {
       this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
+    });
+
+    this.owl.on('beforeanimate', (e) => {
+      this.owl.translateZ(e.delta * 10 * (this.isUsingRocket ? 2 : 1));
     });
 
     this.on('afteranimate', () => {

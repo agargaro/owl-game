@@ -6,7 +6,6 @@ import { Owl } from "../object/owl.js";
 import { Pine } from "../object/pine.js";
 
 export class CollisionController {
-  public enabled = true;
   private _owl: Owl;
   private _coin: Coin;
   private _scene: GameScene;
@@ -39,7 +38,7 @@ export class CollisionController {
       return false;
     });
 
-    if (!this.enabled) return;
+    if (this._scene.isUsingRocket) return;
 
     pine.bvh.intersectBox(owlBox, (instanceIndex) => {
       //TODO: fix dts 
@@ -49,7 +48,7 @@ export class CollisionController {
 
     items.bvh.intersectBox(owlBox, (instanceIndex) => {
       items.dispatchEvent({ type: 'collision' as any, instanceIndex });
-      return false;
+      return true;
     });
   }
 }

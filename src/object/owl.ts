@@ -35,10 +35,6 @@ export class Owl extends Group {
 
     this.bindInteraction();
 
-    this.on('beforeanimate', (e) => {
-      this.translateZ(e.delta * 10);
-    });
-
     remove("owl.glb", "owl-brown.ktx2", "owl-normal.ktx2"); // TODO put in the package
   }
 
