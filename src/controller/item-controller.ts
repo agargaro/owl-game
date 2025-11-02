@@ -15,8 +15,8 @@ export class ItemController {
     items.addEventListener('active' as any, (e) => { // TODO fix d.ts
       // const itemIndex = e.itemIndex; // we have only rocket here
       scene.isUsingRocket = true;
-      const itemPosition = items.getPositionAt(0); // 0 because only one item for now
-      scene.spawnController.spawnCoinsItem(itemPosition);
+      // const itemPosition = items.getPositionAt(0); // 0 because only one item for now
+      scene.spawnController.spawnCoinsItem(scene.owl.position);
     });
   }
 }
