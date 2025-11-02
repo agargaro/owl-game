@@ -140,6 +140,10 @@ export class GameHUD {
             this.rocketsLeft -= 1;
             document.dispatchEvent(new CustomEvent('roket', { detail: { from: 'game-over-rocket-button', rocketsRemaining: this.rocketsLeft } }));
             this._refreshRocketButtonState();
+
+            this.gameOverModal.style.top = "-100dvh";
+            this.scene.timeScale = 1;
+            this.scene.items.dispatchEvent({ type: 'active' as any }); // TODO fix d.ts
         };
 
         button.onmouseenter = () => {

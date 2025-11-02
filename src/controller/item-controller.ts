@@ -1,8 +1,4 @@
-import { BatchedMesh, BufferGeometry, Material, Mesh } from "three";
 import { GameScene } from "../core/scene-game.js";
-import { cellSize, owlFlyHeight, rocketCoinCount } from "../data/config.js";
-import { ItemEventMap } from "../data/events.js";
-import { Items } from "../object/items.js";
 
 export class ItemController {
   private _scene: GameScene;
