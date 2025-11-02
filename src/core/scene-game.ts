@@ -24,6 +24,7 @@ export class GameScene extends Scene {
   public ambientLight = new AmbientLight('white', 0.5);
   public directionalLight = new DirectionalLight('white', 2.5);
   public isUsingRocket = false;
+  public lastTimeScale = 0;
 
   constructor() {
     super();
@@ -48,7 +49,9 @@ export class GameScene extends Scene {
       this.directionalLight.position.setZ(depth);
       this.directionalLight.target.position.setZ(depth);
 
-      this.collisionController.update();
+      if (this.scene.timeScale > 0) {
+        this.collisionController.update();
+      }
     });
   }
 

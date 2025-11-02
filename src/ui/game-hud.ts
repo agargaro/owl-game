@@ -30,10 +30,11 @@ export class GameHUD {
         const newRecord = this.gameStats.consumeNewHighScoreFlag();
         const bestScore = getHighScore();
         this._updateGameOverStats(currentScore, bestScore);
+        this.scene.lastTimeScale = this.scene.timeScale;
         this.scene.timeScale = 0;
         this.gameOverModal.style.top = "0dvh";
     }
-    
+
     private _initHUD() {
         this.gameStats = new GameStats(this.scene);
         this._bindSceneEvents();
@@ -44,7 +45,7 @@ export class GameHUD {
     private _bindSceneEvents() {
         this.scene.addEventListener('gameover' as any, () => this.onGameOver());
     }
-    
+
     private _createGameOverModal() {
         this.gameOverModal = document.createElement("div");
         this._applyModalStyles(this.gameOverModal);
@@ -142,7 +143,7 @@ export class GameHUD {
             this._refreshRocketButtonState();
 
             this.gameOverModal.style.top = "-100dvh";
-            this.scene.timeScale = 1;
+            this.scene.timeScale = this.scene.lastTimeScale;
             this.scene.items.dispatchEvent({ type: 'active' as any }); // TODO fix d.ts
         };
 
@@ -170,8 +171,8 @@ export class GameHUD {
             this.rocketCounterEl.innerText = `${Math.max(0, this.rocketsLeft)} / 3`;
             this.rocketCounterEl.style.color =
                 this.rocketsLeft === 0 ? "rgba(255,100,100,0.85)" :
-                this.rocketsLeft === 1 ? "rgba(255,200,100,0.95)" :
-                "rgba(255,255,255,0.9)";
+                    this.rocketsLeft === 1 ? "rgba(255,200,100,0.95)" :
+                        "rgba(255,255,255,0.9)";
         }
     }
 
