@@ -5,6 +5,7 @@ import { PCFShadowMap } from 'three';
 import { DRACOLoader, GLTFLoader, KTX2Loader } from 'three/examples/jsm/Addons.js';
 import { GameScene } from './core/scene-game.js';
 import { GameHUD } from './ui/game-hud.js';
+import { AudioUtils } from './core/audio.js';
 
 extendBatchedMeshPrototype();
 
@@ -20,6 +21,7 @@ const ktx2Loader = getLoader(KTX2Loader);
 ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/libs/basis/');
 ktx2Loader.detectSupport(main.renderer);
 
+AudioUtils.init();
 await loadPending();
 
 const scene = new GameScene();

@@ -4,6 +4,7 @@ import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
 import { Pine } from "../object/pine.js";
+import { AudioUtils } from "../core/audio.js";
 
 export class CollisionController {
   private _owl: Owl;
@@ -35,6 +36,9 @@ export class CollisionController {
       if (coin.getVisibilityAt(instanceIndex)) { // TODO improve
         coin.dispatchEvent({ type: 'collision', instanceIndex });
       }
+
+      AudioUtils.coinSound[AudioUtils.coinSoundIndex].play();
+      AudioUtils.coinSoundIndex = (AudioUtils.coinSoundIndex + 1) % 50;
       return false;
     });
 
@@ -44,12 +48,14 @@ export class CollisionController {
       //TODO: fix dts 
       this._scene.dispatchEvent({ type: 'gameover' } as any);
       this._scene.timeScale = 0;
+      AudioUtils.treeSound.play();
       // TODO pause render
       return true; // stop checking other pines, it's game over
     });
 
     items.bvh.intersectBox(owlBox, (instanceIndex) => {
       items.dispatchEvent({ type: 'collision' as any, instanceIndex });
+      AudioUtils.rocketSound.play();
       return true;
     });
   }
