@@ -5,9 +5,9 @@ import {
 import { createDataArrayTexture } from '../utils/createDataArrayTexture.js';
 
 export class MeshStandardMultiTextureMaterial extends MeshStandardMaterial {
-  protected _textures: Texture[];
+  protected _textures: DataArrayTexture;
 
-  constructor(protected textures: Texture[], parameters?: MeshStandardMaterialParameters) {
+  constructor(protected textures: DataArrayTexture, parameters?: MeshStandardMaterialParameters) {
     super(parameters);
 
     this._textures = textures;

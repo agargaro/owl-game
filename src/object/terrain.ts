@@ -19,7 +19,7 @@ export class Terrain extends BatchedMesh {
 
     const geometries = gltf.scene.children.map(child => (child as Mesh).geometry);
     const { vertexCount, indexCount } = getBatchedMeshCount(geometries);
-    const textures = get('terrain_array.ktx2');
+    const textures = get<DataArrayTexture>('terrain_array.ktx2');
 
     super(chunkInstanceCount, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
     this.matrixAutoUpdate = false;
