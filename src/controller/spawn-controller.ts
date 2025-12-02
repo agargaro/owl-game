@@ -55,7 +55,6 @@ export class SpawnController {
 
   private generateChunk(spawnObjects: boolean): void {
     const chunkId = this._chunkId++;
-
     if (chunkId + 1 < this._itemLastChunkId) {
       spawnObjects = false;
     } else if (chunkId === this._itemLastChunkId) {

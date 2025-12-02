@@ -7,19 +7,19 @@ import { MeshStandardMultiTextureMaterial } from "../material/MeshStandardMultiT
 import { rand } from "../utils/random.js";
 import {DataArrayTexture} from "three";
 
-preload(GLTFLoader, 'terrain.glb');
-preload(KTX2Loader, 'terrain_array.ktx2');
+preload(GLTFLoader, 'models/terrain.glb');
+preload(KTX2Loader, 'textures/terrain_array.ktx2');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
   public lastId = 0;
   declare private _geometryCount: number;
 
   constructor() {
-    const gltf = get<GLTF>("terrain.glb");
+    const gltf = get<GLTF>("models/terrain.glb");
 
     const geometries = gltf.scene.children.map(child => (child as Mesh).geometry);
     const { vertexCount, indexCount } = getBatchedMeshCount(geometries);
-    const textures = get<DataArrayTexture>('terrain_array.ktx2');
+    const textures = get<DataArrayTexture>('textures/terrain_array.ktx2');
 
     super(chunkInstanceCount, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
     this.matrixAutoUpdate = false;
@@ -37,7 +37,7 @@ export class Terrain extends BatchedMesh {
       this.addGeometry(geometry);
     }
       console.log(this);
-    remove("terrain.glb", 'terrain_array.ktx2'); // TODO put in the package
+    remove("models/terrain.glb", 'textures/terrain_array.ktx2'); // TODO put in the package
   }
 
   public generateChunk(geometryId: number, chunkId: number): number {

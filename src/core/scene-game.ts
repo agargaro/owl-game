@@ -9,9 +9,11 @@ import { Terrain } from "../object/terrain.js";
 import { GameCamera } from "./camera-game.js";
 import { ItemController } from "../controller/item-controller.js";
 import { SpawnController } from "../controller/spawn-controller.js";
+import {GameMode} from "../types/game.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
+  public gameMode: GameMode = "normal";
   public owl = new Owl();
   public coin = new Coin();
   public pine = new Pine();
@@ -29,30 +31,44 @@ export class GameScene extends Scene {
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.coin, this.pine, this.items, this.terrain);
+    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl);
 
     this.setupLight();
 
     this.fog = new Fog(0x8EB65D, 20, cameraFar);
     this.background = this.fog.color;
 
-    this.on('beforeanimate', (e) => {
-      this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
-    });
+  }
 
-    this.owl.on('beforeanimate', (e) => {
-      this.owl.translateZ(e.delta * 10 * (this.isUsingRocket ? 2 : 1));
-    });
-
-    this.on('afteranimate', () => {
-      const depth = this.camera.position.z;
-      this.directionalLight.position.setZ(depth);
-      this.directionalLight.target.position.setZ(depth);
-
-      if (this.scene.timeScale > 0) {
-        this.collisionController.update();
+  public setGameMode(mode: GameMode) {
+      this.gameMode = mode
+      console.log('SetGameMode:', mode);
+      if(mode === "flight") {
+          this.startFlight();
       }
-    });
+  };
+
+  private startFlight(){
+      this.add(this.coin, this.pine, this.items, this.terrain);
+      this.on('beforeanimate', (e) => {
+          this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
+      });
+
+      this.owl.on('beforeanimate', (e) => {
+          this.owl.translateZ(e.delta * 10 * (this.isUsingRocket ? 2 : 1));
+      });
+
+      this.on('afteranimate', () => {
+          const depth = this.camera.position.z;
+          this.directionalLight.position.setZ(depth);
+          this.directionalLight.target.position.setZ(depth);
+
+          if (this.scene.timeScale > 0) {
+              this.collisionController.update();
+          }
+      });
+      this.owl.startFlight();
+      this.camera.startFlight();
   }
 
   private setupLight(): void {

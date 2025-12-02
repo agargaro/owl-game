@@ -5,12 +5,12 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { DefaultEventMap } from "../data/events.js";
 import { cellSize, chunkInstanceCount, chunkRows } from "../data/config.js";
 
-preload(GLTFLoader, 'pine.glb')
+preload(GLTFLoader, 'models/pine.glb')
 export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMaterial, DefaultEventMap> {
   public override name = "Pine";
 
   constructor() {
-    const gltf = get<GLTF>("pine.glb");
+    const gltf = get<GLTF>("models/pine.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
 
     const maxSpawnPerRow = 2;
@@ -29,6 +29,6 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMateri
 
     this.computeBVH();
 
-    remove("pine.glb"); // TODO put in the package
+    remove("models/pine.glb"); // TODO put in the package
   }
 }

@@ -4,12 +4,12 @@ import { BatchedMesh, Matrix4, Mesh, MeshLambertMaterial, WebGLCoordinateSystem 
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { cellSize, owlFlyHeight } from "../data/config.js";
 
-preload(GLTFLoader, 'rocket.glb');
+preload(GLTFLoader, 'models/rocket.glb');
 export class Items extends BatchedMesh {
   public override name = "Items";
 
   constructor() {
-    const rocket = get<GLTF>("rocket.glb").scene.children[0].children[0].children[0].children[0] as Mesh;
+    const rocket = get<GLTF>("models/rocket.glb").scene.children[0].children[0].children[0].children[0] as Mesh;
     const { vertexCount, indexCount } = getBatchedMeshCount([rocket.geometry]);
 
     super(1, vertexCount, indexCount, new MeshLambertMaterial());

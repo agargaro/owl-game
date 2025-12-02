@@ -4,16 +4,17 @@ import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, Quater
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { cellSize, chunkInstanceCount, chunkRows, rocketCoinCount } from "../data/config.js";
 import { CoinEventMap } from "../data/events.js";
+import {GameMode} from "../types/game.js";
 
 // TODO: use meshLamberMaterial for all?
 
-preload(GLTFLoader, 'coin.glb')
+preload(GLTFLoader, 'models/coin.glb')
 export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial, CoinEventMap> {
   public override name = "Coin";
   public collectedCount = 0;
 
   constructor() {
-    const gltf = get<GLTF>("coin.glb");
+    const gltf = get<GLTF>("models/coin.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
     const baseMaterial = mesh.material;
 
@@ -26,7 +27,6 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
     this.renderOrder = 2;
     this.castShadow = true;
     this.frustumCulled = false;
-
     this.addEventListener('collision', (e) => {
       // TODO add particles
       this.collectedCount++;
@@ -38,6 +38,7 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
 
     const quaternion = new Quaternion();
     const yAxis = new Vector3(0, 1, 0);
+
 
     this.on('animate', (e) => quaternion.setFromAxisAngle(yAxis, e.total * 3));
 

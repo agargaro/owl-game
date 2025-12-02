@@ -5,42 +5,46 @@ import { lerp } from "three/src/math/MathUtils.js";
 import { owlFlyHeight, playableWidth } from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 
-preload(GLTFLoader, "owl.glb");
-preload(KTX2Loader, "owl-brown.ktx2", "owl-normal.ktx2");
+preload(GLTFLoader, "models/owl.glb");
+preload(KTX2Loader, "textures/owl-brown.ktx2", "textures/owl-normal.ktx2");
 export class Owl extends Group {
   public override name = "Owl";
   public readonly collider = new Box3();
   private readonly _joystick = new VirtualJoystick();
   private readonly _mixer = new AnimationMixer(this);
   private _flyAction: AnimationAction;
+  private _idleAction: AnimationAction;
 
   constructor() {
     super();
     this.renderOrder = 0;
     this.frustumCulled = false;
 
-    const gltf = get<GLTF>("owl.glb");
+    const gltf = get<GLTF>("models/owl.glb");
     this.add(...gltf.scene.children);
 
-    this.removeAccesories();
+    this.scale.divideScalar(10);
+    this.applyAccesories();
+    this.initAnimation(gltf.animations);
+    this._idleAction.fadeIn(.2).play();
+    remove("models/owl.glb", "textures/owl-brown.ktx2", "textures/owl-normal.ktx2"); // TODO put in the package
+  }
 
+  public startFlight(): void {
+    this._idleAction.fadeOut(.2).stop();
+    this._flyAction.fadeIn(.2).play();
+    this.bindInteraction();
+
+    this.scale.divideScalar(1.5);
     this.rotation.y = Math.PI;
-    this.scale.divideScalar(15);
     this.collider.setFromObject(this);
     this.position.y = owlFlyHeight;
     this.position.z = -15; // to wait 3 seconds before obstacles spawn
-
-    this.initAnimation(gltf.animations);
-    this._flyAction.play();
-
-    this.bindInteraction();
-
-    remove("owl.glb", "owl-brown.ktx2", "owl-normal.ktx2"); // TODO put in the package
   }
 
-  private removeAccesories(): void {
-    const map = get<Texture>("owl-brown.ktx2");
-    const normalMap = get<Texture>('owl-normal.ktx2');
+  private applyAccesories(): void {
+    const map = get<Texture>("textures/owl-brown.ktx2");
+    const normalMap = get<Texture>('textures/owl-normal.ktx2');
 
     this.traverse((child) => {
       if (!child.name.includes("Owl")) {
@@ -59,6 +63,7 @@ export class Owl extends Group {
 
   private initAnimation(animations: AnimationClip[]): void {
     this._flyAction = this._mixer.clipAction(animations.find((a) => a.name === "Flight"));
+    this._idleAction = this._mixer.clipAction(animations.find((a) => a.name === "Idle"));
 
     this.on('animate', (e) => this._mixer.update(e.delta));
   }

@@ -31,5 +31,7 @@ async function startGame(): Promise<void> {
     main.createView({ scene, camera: scene.camera, enabled: false });
 
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez
+
+    document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
 }
 startGame()
