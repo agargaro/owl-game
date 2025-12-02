@@ -1,12 +1,20 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
-import { AnimationAction, AnimationClip, AnimationMixer, Box3, Group, Mesh, MeshLambertMaterial, Texture } from "three";
+import {
+    AnimationAction, AnimationClip, AnimationMixer, Box3, Color,
+    Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
+    MeshPhongMaterial, Texture
+} from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
-import { owlFlyHeight, playableWidth } from "../data/config.js";
+import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 
 preload(GLTFLoader, "models/owl.glb");
-preload(KTX2Loader, "textures/owl-brown.ktx2", "textures/owl-normal.ktx2");
+preload(KTX2Loader,
+    `${cdnBaseUrl}/textures/owl/Owl_Brown.ktx2`,
+    `${cdnBaseUrl}/textures/owl/Owl_Normal.ktx2`,
+    `${cdnBaseUrl}/textures/eyes/Owl_Eyes_Brown.ktx2`
+);
 export class Owl extends Group {
   public override name = "Owl";
   public readonly collider = new Box3();
@@ -27,7 +35,11 @@ export class Owl extends Group {
     this.applyAccesories();
     this.initAnimation(gltf.animations);
     this._idleAction.fadeIn(.2).play();
-    remove("models/owl.glb", "textures/owl-brown.ktx2", "textures/owl-normal.ktx2"); // TODO put in the package
+    remove("models/owl.glb",
+        `${cdnBaseUrl}/textures/owl/Owl_Brown.ktx2`,
+        `${cdnBaseUrl}/textures/owl/Owl_Normal.ktx2`,
+        `${cdnBaseUrl}/textures/eyes/Owl_Eyes_Brown.ktx2`
+    ); // TODO put in the package
   }
 
   public startFlight(): void {
@@ -43,21 +55,39 @@ export class Owl extends Group {
   }
 
   private applyAccesories(): void {
-    const map = get<Texture>("textures/owl-brown.ktx2");
+    const map = get<Texture>(`${cdnBaseUrl}/textures/owl/Owl_Brown.ktx2`);
+    const eyeMap = get<Texture>(`${cdnBaseUrl}/textures/eyes/Owl_Eyes_Brown.ktx2`);
     const normalMap = get<Texture>('textures/owl-normal.ktx2');
 
     this.traverse((child) => {
-      if (!child.name.includes("Owl")) {
-        child.visible = false;
-      } else {
-        // TODO refactor
-        const material = (child as Mesh).material as MeshLambertMaterial;
-        if (material) {
-          material.map = map;
-          material.normalMap = normalMap;
-          // child.castShadow = true;
+        if (!child.name.includes("Owl")) {
+            child.visible = false;
+            return;
         }
-      }
+        const mesh = child as Mesh;
+        if (mesh.material) {
+            if (Array.isArray(mesh.material)) {
+                mesh.material.forEach((m) => m.dispose());
+            } else {
+                mesh.material.dispose();
+            }
+        }
+        let material: MeshPhongMaterial | MeshBasicMaterial | MeshLambertMaterial;
+        switch (child.name) {
+            case "Owl_Eyes_low":
+                material = new MeshLambertMaterial({map: eyeMap});
+                break;
+            case "Owl_Bliks_low":
+                material = new MeshBasicMaterial({color: new Color("#ccc")});
+                break;
+            case "Owl_low":
+                material = new MeshPhongMaterial({map: map, normalMap:normalMap});
+                break;
+            default:
+                break;
+        }
+
+        mesh.material = material;
     });
   }
 
@@ -79,7 +109,7 @@ export class Owl extends Group {
       idealPosition = event.direction.x * event.force * halfPlayableWidth;
       idealRotation = -(this.position.x - idealPosition) * 0.2;
     });
-    this._joystick.addEventListener('release', (event) => {
+    this._joystick.addEventListener('release', () => {
       idealPosition = 0;
       idealRotation = -(this.position.x * 0.2);
     });

@@ -9,3 +9,4 @@ export const changeChunkDistance = 40;
 export const chunkInstanceCount = 2;
 export const rocketCoinCount = 99; // must be multiplier of 3
 export const treeSpawnRatio = 5; // must be a multiplier of 40
+export const cdnBaseUrl = "https://cdn.notwise.co/assets"
