@@ -10,7 +10,7 @@ import { AudioUtils } from './core/audio.js';
 async function startGame(): Promise<void> {
     extendBatchedMeshPrototype();
 
-    const main = new Main({ showStats: true, enableCursor: false, rendererParameters: { antialias: false } });
+    const main = new Main({ showStats: true, enableCursor: false, rendererParameters: { antialias: false, alpha: false } });
 
     main.renderer.shadowMap.enabled = true;
     main.renderer.shadowMap.type = PCFShadowMap;
