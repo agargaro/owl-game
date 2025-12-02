@@ -1,11 +1,12 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import { createRadixSort, InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial } from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import {BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, Texture} from "three";
+import {GLTF, GLTFLoader, KTX2Loader} from "three/examples/jsm/Addons.js";
 import { DefaultEventMap } from "../data/events.js";
-import { cellSize, chunkInstanceCount, chunkRows } from "../data/config.js";
+import { cellSize, chunkInstanceCount, chunkRows} from "../data/config.js";
 
 preload(GLTFLoader, 'models/pine.glb')
+preload(KTX2Loader, 'textures/pinetree.ktx2');
 export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMaterial, DefaultEventMap> {
   public override name = "Pine";
 
@@ -16,8 +17,8 @@ export class Pine extends InstancedMesh2<void, BufferGeometry, MeshLambertMateri
     const maxSpawnPerRow = 2;
     const spawnRowInterval = 4;
     const capacity = chunkInstanceCount * (chunkRows / cellSize) * maxSpawnPerRow / spawnRowInterval;
-
-    super(mesh.geometry, new MeshLambertMaterial({ color: 'green' }), { capacity }); // todo remove color
+    const texture = get<Texture>('textures/pinetree.ktx2');
+    super(mesh.geometry, new MeshLambertMaterial({ map: texture, side: 2 }), { capacity }); // todo remove color
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 1;
