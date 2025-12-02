@@ -1,8 +1,7 @@
 import {
     DataArrayTexture,
-    MeshStandardMaterial, MeshStandardMaterialParameters, Texture, WebGLProgramParametersWithUniforms, WebGLRenderer
+    MeshStandardMaterial, MeshStandardMaterialParameters, WebGLProgramParametersWithUniforms, WebGLRenderer
 } from 'three';
-import { createDataArrayTexture } from '../utils/createDataArrayTexture.js';
 
 export class MeshStandardMultiTextureMaterial extends MeshStandardMaterial {
   protected _textures: DataArrayTexture;
