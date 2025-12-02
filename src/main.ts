@@ -32,5 +32,4 @@ async function startGame(): Promise<void> {
 
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez
 }
-
-document.addEventListener('click', startGame, { once: true });
+startGame()

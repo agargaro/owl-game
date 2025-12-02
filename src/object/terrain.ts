@@ -1,13 +1,14 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import { getBatchedMeshCount } from "@three.ez/batched-mesh-extensions";
-import { BatchedMesh, Matrix4, Mesh, Texture, TextureLoader, WebGLCoordinateSystem } from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import { BatchedMesh, Matrix4, Mesh, WebGLCoordinateSystem } from "three";
+import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { chunkInstanceCount, chunkRows } from "../data/config.js";
 import { MeshStandardMultiTextureMaterial } from "../material/MeshStandardMultiTextureMaterial.js";
 import { rand } from "../utils/random.js";
+import {DataArrayTexture} from "three";
 
 preload(GLTFLoader, 'terrain.glb');
-preload(TextureLoader, 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png');
+preload(KTX2Loader, 'terrain_array.ktx2');
 export class Terrain extends BatchedMesh {
   public override name = "Terrain";
   public lastId = 0;
@@ -15,17 +16,10 @@ export class Terrain extends BatchedMesh {
 
   constructor() {
     const gltf = get<GLTF>("terrain.glb");
+
     const geometries = gltf.scene.children.map(child => (child as Mesh).geometry);
     const { vertexCount, indexCount } = getBatchedMeshCount(geometries);
-
-    const textures = [
-      get<Texture>('Light_Bake_Terrain1.png'),
-      get<Texture>('Light_Bake_Terrain2.png'),
-      get<Texture>('Light_Bake_Terrain3.png'),
-      get<Texture>('Light_Bake_Terrain4.png'),
-      get<Texture>('Light_Bake_Terrain5.png'),
-      get<Texture>('Light_Bake_Terrain6.png'),
-    ];
+    const textures = get('terrain_array.ktx2');
 
     super(chunkInstanceCount, vertexCount, indexCount, new MeshStandardMultiTextureMaterial(textures));
     this.matrixAutoUpdate = false;
@@ -42,8 +36,8 @@ export class Terrain extends BatchedMesh {
     for (const geometry of geometries) {
       this.addGeometry(geometry);
     }
-
-    remove("terrain.glb", 'Light_Bake_Terrain1.png', 'Light_Bake_Terrain2.png', 'Light_Bake_Terrain3.png', 'Light_Bake_Terrain4.png', 'Light_Bake_Terrain5.png', 'Light_Bake_Terrain6.png'); // TODO put in the package
+      console.log(this);
+    remove("terrain.glb", 'terrain_array.ktx2'); // TODO put in the package
   }
 
   public generateChunk(geometryId: number, chunkId: number): number {
