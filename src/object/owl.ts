@@ -30,7 +30,8 @@ export class Owl extends Group {
 
     const gltf = get<GLTF>("models/owl.glb");
     this.add(...gltf.scene.children);
-
+    this.position.y = -0.5;
+    this.position.z = 0.4;
     this.scale.divideScalar(10);
     this.applyAccesories();
     this.initAnimation(gltf.animations);

@@ -4,7 +4,6 @@ import { BatchedMesh, Matrix4, Mesh, WebGLCoordinateSystem } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { chunkInstanceCount, chunkRows } from "../data/config.js";
 import { MeshStandardMultiTextureMaterial } from "../material/MeshStandardMultiTextureMaterial.js";
-import { rand } from "../utils/random.js";
 import {DataArrayTexture} from "three";
 
 preload(GLTFLoader, 'models/terrain.glb');
@@ -36,7 +35,7 @@ export class Terrain extends BatchedMesh {
     for (const geometry of geometries) {
       this.addGeometry(geometry);
     }
-      console.log(this);
+
     remove("models/terrain.glb", 'textures/terrain_array.ktx2'); // TODO put in the package
   }
 
@@ -59,6 +58,7 @@ export class Terrain extends BatchedMesh {
   public getNextChunkId(): number {
     return (this.lastId + 1) % this.maxInstanceCount;
   }
+
 }
 
 const matrix = new Matrix4();

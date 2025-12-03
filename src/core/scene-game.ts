@@ -1,4 +1,4 @@
-import { AmbientLight, DirectionalLight, Fog, Scene } from "three";
+import { Color, DirectionalLight, Fog, HemisphereLight, Scene} from "three";
 import { CollisionController } from "../controller/collision-controller.js";
 import { acceleration, cameraFar, maxSpeed } from "../data/config.js";
 import { Coin } from "../object/coin.js";
@@ -10,10 +10,12 @@ import { GameCamera } from "./camera-game.js";
 import { ItemController } from "../controller/item-controller.js";
 import { SpawnController } from "../controller/spawn-controller.js";
 import {GameMode} from "../types/game.js";
+import {Tree} from "../object/tree.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
   public gameMode: GameMode = "normal";
+  public tree = new Tree();
   public owl = new Owl();
   public coin = new Coin();
   public pine = new Pine();
@@ -23,7 +25,7 @@ export class GameScene extends Scene {
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
   public itemController = new ItemController(this);
-  public ambientLight = new AmbientLight('white', 0.5);
+  public ambientLight = new HemisphereLight('white', 'blue', 1);
   public directionalLight = new DirectionalLight('white', 2.5);
   public isUsingRocket = false;
   public lastTimeScale = 0;
@@ -31,12 +33,12 @@ export class GameScene extends Scene {
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl);
+    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.tree);
 
     this.setupLight();
 
     this.fog = new Fog(0x8EB65D, 20, cameraFar);
-    this.background = this.fog.color;
+    this.background = new Color(0x080d1b);
 
   }
 
@@ -49,6 +51,7 @@ export class GameScene extends Scene {
   };
 
   private startFlight(){
+      this.background = this.fog.color;
       this.add(this.coin, this.pine, this.items, this.terrain);
       this.on('beforeanimate', (e) => {
           this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
@@ -69,12 +72,13 @@ export class GameScene extends Scene {
       });
       this.owl.startFlight();
       this.camera.startFlight();
+      this.directionalLight.position.set(0, 10, 0);
   }
 
   private setupLight(): void {
     const dirLight = this.directionalLight;
     const shadowCamera = dirLight.shadow.camera;
-    dirLight.position.set(0, 10, 0);
+    dirLight.position.set(5, 10, 0);
     dirLight.castShadow = true;
     shadowCamera.left = -3;
     shadowCamera.right = 3;
