@@ -11,6 +11,8 @@ import { ItemController } from "../controller/item-controller.js";
 import { SpawnController } from "../controller/spawn-controller.js";
 import {GameMode} from "../types/game.js";
 import {Tree} from "../object/tree.js";
+import {PineMeadow} from "../object/pineMeadow.js";
+import {TreeMeadow} from "../object/treeMeadow.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -21,11 +23,13 @@ export class GameScene extends Scene {
   public pine = new Pine();
   public items = new Items();
   public terrain = new Terrain();
+  public pineMeadow = new PineMeadow();
+  public treeMeadow = new TreeMeadow();
   public camera = new GameCamera(this.owl);
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
   public itemController = new ItemController(this);
-  public ambientLight = new HemisphereLight('white', 'blue', 1);
+  public ambientLight = new HemisphereLight(0xffffff, 0xe7cfa4, 1);
   public directionalLight = new DirectionalLight('white', 2.5);
   public isUsingRocket = false;
   public lastTimeScale = 0;
@@ -33,7 +37,7 @@ export class GameScene extends Scene {
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.tree);
+    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.tree, this.pineMeadow, this.treeMeadow);
 
     this.setupLight();
 

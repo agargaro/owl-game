@@ -33,7 +33,6 @@ export class Tree extends Group {
   private applySkins(): void {
     const map = get<Texture>(`textures/tree-base.ktx2`);
     this.children[0].traverse((child) => {
-        console.log(child.name);
         if (!['Armature', 'Tree_low'].includes(child.name)) {
             child.visible = false;
             return;
@@ -46,7 +45,6 @@ export class Tree extends Group {
                 mesh.material.dispose();
             }
         }
-        console.log(mesh);
         mesh.material = new MeshLambertMaterial({map: map, transparent: true, alphaTest: 0.5});
         mesh.visible = true;
     });

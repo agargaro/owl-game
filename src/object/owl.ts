@@ -32,7 +32,7 @@ export class Owl extends Group {
     this.add(...gltf.scene.children);
     this.position.y = -0.5;
     this.position.z = 0.4;
-    this.scale.divideScalar(10);
+    this.scale.divideScalar(12);
     this.applyAccesories();
     this.initAnimation(gltf.animations);
     this._idleAction.fadeIn(.2).play();
