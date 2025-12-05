@@ -4,14 +4,21 @@ import {
     MeshLambertMaterialParameters, WebGLProgramParametersWithUniforms
 } from 'three';
 
+const TREE_COLORS = {
+    day: new Color(0x1b4c10),
+    dusk: new Color(0x675813),
+    night: new Color(0x113510)
+}
+
 export class MeadowTreeMaterial extends MeshLambertMaterial {
     protected shader: WebGLProgramParametersWithUniforms;
+    override color = new Color(0x0f3c1d);
     constructor(alphaMap: any, parameters?: MeshLambertMaterialParameters) {
         super(parameters);
         this.shader = null;
         this.alphaMap = alphaMap;
         this.alphaTest = 0.5;
-        this.color = new Color('#0f3c1d');
+        this.updateDayTime(1);
     }
 
     public override onBeforeCompile(shader): void {
@@ -107,5 +114,16 @@ export class MeadowTreeMaterial extends MeshLambertMaterial {
         if (!this.shader) return;
         this.shader.uniforms.u_windTime.value +=
             this.shader.uniforms.u_windSpeed.value * dt;
+    }
+    updateDayTime(cycle: number){
+        let targetColor: Color;
+
+        if (cycle < 0.5) {
+            targetColor = TREE_COLORS.night.clone().lerp(TREE_COLORS.dusk, cycle / 0.5);
+        } else {
+            targetColor = TREE_COLORS.dusk.clone().lerp(TREE_COLORS.day, (cycle - 0.5) / 0.5);
+        }
+
+        this.color = this.color.clone().lerp(targetColor, 0.5);
     }
 }

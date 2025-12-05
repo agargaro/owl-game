@@ -44,7 +44,7 @@ export class Tree extends Group {
                 mesh.material.dispose();
             }
         }
-        mesh.material = new MeshLambertMaterial({map: map, transparent: true, alphaTest: 0.5});
+        mesh.material = new MeshLambertMaterial({map: map, transparent: true, alphaTest: 0.9});
         mesh.visible = true;
     });
   }

@@ -1,6 +1,6 @@
-import { Color, DirectionalLight, Fog, HemisphereLight, Scene} from "three";
+import { Color, Scene} from "three";
 import { CollisionController } from "../controller/collision-controller.js";
-import { acceleration, cameraFar, maxSpeed } from "../data/config.js";
+import { acceleration, maxSpeed } from "../data/config.js";
 import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
@@ -14,6 +14,7 @@ import {Tree} from "../object/tree.js";
 import {PineMeadow} from "../object/pineMeadow.js";
 import {TreeMeadow} from "../object/treeMeadow.js";
 import {SkyBox} from "../object/skyBox.js";
+import {Environment} from "../object/environment.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -27,23 +28,28 @@ export class GameScene extends Scene {
   public pineMeadow = new PineMeadow();
   public treeMeadow = new TreeMeadow();
   public skyBox = new SkyBox();
+  public env = new Environment();
   public camera = new GameCamera(this.owl);
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
   public itemController = new ItemController(this);
-  public hemiLight = new HemisphereLight(0xffffff, 0x6e654f, 1);
-  public directionalLight = new DirectionalLight('white', 2);
   public isUsingRocket = false;
   public lastTimeScale = 0;
 
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.hemiLight, this.owl, this.tree, this.pineMeadow, this.treeMeadow, this.skyBox);
-
-    this.setupLight();
-
-    this.fog = new Fog(0x070d21, 20, cameraFar);
+    this.add(
+        this.env.hemiLight,
+        this.env.directionalLight,
+        this.env.directionalLight.target,
+        this.owl,
+        this.tree,
+        this.pineMeadow,
+        this.treeMeadow,
+        this.skyBox
+    );
+    this.fog = this.env.fog;
     this.background = new Color(0x080d1b);
 
   }
@@ -70,8 +76,8 @@ export class GameScene extends Scene {
 
       this.on('afteranimate', () => {
           const depth = this.camera.position.z;
-          this.directionalLight.position.setZ(depth);
-          this.directionalLight.target.position.setZ(depth);
+          this.env.directionalLight.position.setZ(depth);
+          this.env.directionalLight.target.position.setZ(depth);
 
           if (this.scene.timeScale > 0) {
               this.collisionController.update();
@@ -83,21 +89,7 @@ export class GameScene extends Scene {
       this.skyBox.visible = false;
       this.owl.startFlight();
       this.camera.startFlight();
-      this.directionalLight.position.set(0, 10, 0);
-  }
-
-  private setupLight(): void {
-    const dirLight = this.directionalLight;
-    const shadowCamera = dirLight.shadow.camera;
-    dirLight.position.set(5, 10, 0);
-    dirLight.castShadow = true;
-    shadowCamera.left = -3;
-    shadowCamera.right = 3;
-    shadowCamera.top = 40;
-    shadowCamera.bottom = 0;
-    shadowCamera.updateProjectionMatrix();
-    dirLight.shadow.mapSize.set(256, 1024);
-    dirLight.shadow.bias = -0.0001;
-    dirLight.shadow.normalBias = -0.0001;
+      this.env.setFlight(true);
+      this.env.directionalLight.position.set(0, 10, 0);
   }
 }

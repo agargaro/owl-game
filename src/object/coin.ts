@@ -1,10 +1,9 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import { InstancedMesh2 } from "@three.ez/instanced-mesh";
-import { BufferGeometry, Mesh, MeshLambertMaterial, MeshStandardMaterial, Quaternion, Vector3 } from "three";
+import {BufferGeometry, Color, Mesh, MeshLambertMaterial, MeshStandardMaterial, Quaternion, Vector3} from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { cellSize, chunkInstanceCount, chunkRows, rocketCoinCount } from "../data/config.js";
 import { CoinEventMap } from "../data/events.js";
-import {GameMode} from "../types/game.js";
 
 // TODO: use meshLamberMaterial for all?
 
@@ -16,12 +15,11 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
   constructor() {
     const gltf = get<GLTF>("models/coin.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
-    const baseMaterial = mesh.material;
 
     const maxSpawnPerRow = 2;
     const capacity = Math.max(rocketCoinCount, chunkInstanceCount * (chunkRows / cellSize) * maxSpawnPerRow);
 
-    super(mesh.geometry, new MeshLambertMaterial({ color: baseMaterial.color }), { createEntities: true, capacity });
+    super(mesh.geometry, new MeshLambertMaterial({ color: new Color('gold'), emissive: new Color('gold'), emissiveIntensity: 0.1 }), { createEntities: true, capacity });
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
     this.renderOrder = 2;

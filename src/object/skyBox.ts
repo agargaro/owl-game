@@ -39,11 +39,11 @@ export class SkyBox extends Group {
   }
 
   private _updateMoon(){
-     const cycle = 1 - this._cycle;
+     const cycle = this._cycle;
      this._moon.position.set(-5 * (Math.cos(1.2 - cycle) + 0.1), 5.0 * (0.3 - cycle), 0.01);
-     this._moon.scale.setScalar(Math.sin(1 - cycle) + 0.4);
+     this._moon.scale.setScalar(Math.sin(1 - cycle) + 0.3);
      if (this._moon.material instanceof Material) {
-         this._moon.material.opacity = this._cycle;
+         this._moon.material.opacity = 1 - this._cycle;
      }
   }
 

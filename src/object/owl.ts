@@ -76,7 +76,7 @@ export class Owl extends Group {
         let material: MeshPhongMaterial | MeshBasicMaterial | MeshLambertMaterial;
         switch (child.name) {
             case "Owl_Eyes_low":
-                material = new MeshLambertMaterial({map: eyeMap});
+                material = new MeshLambertMaterial({map: eyeMap, fog: false});
                 break;
             case "Owl_Bliks_low":
                 material = new MeshBasicMaterial({color: new Color("#ccc")});

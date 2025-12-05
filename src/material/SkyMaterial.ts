@@ -4,11 +4,11 @@ import {
 } from "three";
 
 export class SkyMaterial extends MeshBasicMaterial {
-    private _cycle = 0;
+    private _cycle = 0.5;
 
     constructor(cycle: number = 0) {
         super();
-        this._cycle = cycle;
+        this._cycle = 1 - cycle;
         this.fog = false;
     }
 
