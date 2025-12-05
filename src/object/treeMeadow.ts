@@ -2,11 +2,11 @@ import { get, preload, remove } from "@three.ez/asset-manager";
 import {
     Group, Mesh, Texture, TextureLoader
 } from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
+import {GLTF, GLTFLoader, KTX2Loader} from "three/examples/jsm/Addons.js";
 import {MeadowTreeMaterial} from "../material/MeadowTreeMaterial.js";
 
 preload(GLTFLoader, "models/tree-meadow.glb");
-preload(TextureLoader, "textures/LeavesMask_09.png");
+preload(KTX2Loader, "textures/leavesMask.ktx2");
 export class TreeMeadow extends Group {
     public override name = "TreeMeadow";
     constructor() {
@@ -15,7 +15,7 @@ export class TreeMeadow extends Group {
         this.frustumCulled = false;
 
         const gltf = get<GLTF>("models/tree-meadow.glb");
-        const alphaMap = get<Texture>("textures/LeavesMask_09.png");
+        const alphaMap = get<Texture>("textures/leavesMask.ktx2");
         const material = new MeadowTreeMaterial(alphaMap);
         this.add(...gltf.scene.children);
         if(this.children) {

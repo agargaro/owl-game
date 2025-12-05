@@ -57,6 +57,7 @@ export class GameScene extends Scene {
   private startFlight(){
       this.background = this.fog.color;
       this.add(this.coin, this.pine, this.items, this.terrain);
+
       this.on('beforeanimate', (e) => {
           this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
       });
@@ -74,6 +75,9 @@ export class GameScene extends Scene {
               this.collisionController.update();
           }
       });
+
+      this.pineMeadow.visible = false;
+      this.treeMeadow.visible = false;
       this.owl.startFlight();
       this.camera.startFlight();
       this.directionalLight.position.set(0, 10, 0);
