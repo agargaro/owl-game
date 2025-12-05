@@ -13,6 +13,7 @@ import {GameMode} from "../types/game.js";
 import {Tree} from "../object/tree.js";
 import {PineMeadow} from "../object/pineMeadow.js";
 import {TreeMeadow} from "../object/treeMeadow.js";
+import {SkyBox} from "../object/skyBox.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -25,6 +26,7 @@ export class GameScene extends Scene {
   public terrain = new Terrain();
   public pineMeadow = new PineMeadow();
   public treeMeadow = new TreeMeadow();
+  public skyBox = new SkyBox();
   public camera = new GameCamera(this.owl);
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
@@ -37,7 +39,7 @@ export class GameScene extends Scene {
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.hemiLight, this.owl, this.tree, this.pineMeadow, this.treeMeadow);
+    this.add(this.directionalLight, this.directionalLight.target, this.hemiLight, this.owl, this.tree, this.pineMeadow, this.treeMeadow, this.skyBox);
 
     this.setupLight();
 
@@ -78,6 +80,7 @@ export class GameScene extends Scene {
 
       this.pineMeadow.visible = false;
       this.treeMeadow.visible = false;
+      this.skyBox.visible = false;
       this.owl.startFlight();
       this.camera.startFlight();
       this.directionalLight.position.set(0, 10, 0);
