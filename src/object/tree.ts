@@ -21,7 +21,6 @@ export class Tree extends Group {
 
     const gltf = get<GLTF>("models/tree.glb");
     this.add(...gltf.scene.children);
-    console.log(gltf.scene);
     this.scale.divideScalar(8);
     this.position.y = -0.35;
     this.applySkins();

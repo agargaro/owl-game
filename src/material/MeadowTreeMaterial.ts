@@ -1,19 +1,23 @@
-import {Color, MeshStandardMaterial, MeshStandardMaterialParameters, WebGLProgramParametersWithUniforms} from 'three';
+import {
+    Color,
+    MeshLambertMaterial,
+    MeshLambertMaterialParameters, WebGLProgramParametersWithUniforms
+} from 'three';
 
-export class MeadowTreeMaterial extends MeshStandardMaterial {
+export class MeadowTreeMaterial extends MeshLambertMaterial {
     protected shader: WebGLProgramParametersWithUniforms;
-    constructor(alphaMap: any, parameters?: MeshStandardMaterialParameters) {
+    constructor(alphaMap: any, parameters?: MeshLambertMaterialParameters) {
         super(parameters);
         this.shader = null;
         this.alphaMap = alphaMap;
         this.alphaTest = 0.5;
-        this.color = new Color('#0b270b').convertLinearToSRGB();
+        this.color = new Color('#0f3c1d');
     }
 
     public override onBeforeCompile(shader): void {
         this.shader = shader;
 
-        shader.uniforms.u_effectBlend = { value: 1.0 };
+        shader.uniforms.u_effectBlend = { value: .8 };
         shader.uniforms.u_inflate     = { value: 0.0 };
         shader.uniforms.u_scale       = { value: 1.0 };
         shader.uniforms.u_windSpeed   = { value: 1.0 };
@@ -95,7 +99,6 @@ export class MeadowTreeMaterial extends MeshStandardMaterial {
             modified = (R * vec4(modified, 1.0)).xyz;
             
             transformed = modified;
-
     `
             );
 

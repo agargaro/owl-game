@@ -5,8 +5,8 @@ import {
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import {MeadowTreeMaterial} from "../material/MeadowTreeMaterial.js";
 
-preload(GLTFLoader, "https://douges.dev/static/tree.glb");
-preload(TextureLoader, "https://douges.dev/static/foliage_alpha3.png");
+preload(GLTFLoader, "models/tree-meadow.glb");
+preload(TextureLoader, "textures/LeavesMask_09.png");
 export class TreeMeadow extends Group {
     public override name = "TreeMeadow";
     constructor() {
@@ -14,17 +14,17 @@ export class TreeMeadow extends Group {
         this.renderOrder = 5;
         this.frustumCulled = false;
 
-        const gltf = get<GLTF>("https://douges.dev/static/tree.glb");
-        const alphaMap = get<Texture>("https://douges.dev/static/foliage_alpha3.png");
+        const gltf = get<GLTF>("models/tree-meadow.glb");
+        const alphaMap = get<Texture>("textures/LeavesMask_09.png");
         const material = new MeadowTreeMaterial(alphaMap);
         this.add(...gltf.scene.children);
         if(this.children) {
-            const child = this.children[3] as Mesh;
+            const child = this.children[0] as Mesh;
             child.material = material;
         }
         this.on("animate", (e) => material.update(e.delta));
 
-        this.position.set(-1,-5,-3);
-        remove("https://douges.dev/static/tree.glb", 'textures/meadowTex.ktx2');
+        this.position.set(0.5,-4,-7);
+        remove("models/tree-meadow.glb", 'textures/meadowTex.ktx2');
     }
 }

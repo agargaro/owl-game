@@ -29,19 +29,19 @@ export class GameScene extends Scene {
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
   public itemController = new ItemController(this);
-  public ambientLight = new HemisphereLight(0xffffff, 0xe7cfa4, 1);
-  public directionalLight = new DirectionalLight('white', 2.5);
+  public hemiLight = new HemisphereLight(0xffffff, 0x6e654f, 1);
+  public directionalLight = new DirectionalLight('white', 2);
   public isUsingRocket = false;
   public lastTimeScale = 0;
 
   constructor() {
     super();
 
-    this.add(this.directionalLight, this.directionalLight.target, this.ambientLight, this.owl, this.tree, this.pineMeadow, this.treeMeadow);
+    this.add(this.directionalLight, this.directionalLight.target, this.hemiLight, this.owl, this.tree, this.pineMeadow, this.treeMeadow);
 
     this.setupLight();
 
-    this.fog = new Fog(0x8EB65D, 20, cameraFar);
+    this.fog = new Fog(0x070d21, 20, cameraFar);
     this.background = new Color(0x080d1b);
 
   }
