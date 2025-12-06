@@ -85,6 +85,6 @@ export class Environment {
 
     public setFlight(isFlight: boolean): void {
         this._isFlight = isFlight;
-        this.updateDayTime(0.9)
+        this.updateDayTime(0)
     }
 }

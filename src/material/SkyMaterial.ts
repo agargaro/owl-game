@@ -4,16 +4,17 @@ import {
 } from "three";
 
 export class SkyMaterial extends MeshBasicMaterial {
-    private _cycle = 0.5;
+    private _cycle = 0;
+    private _uniforms: any;
 
-    constructor(cycle: number = 0) {
+    constructor() {
         super();
-        this._cycle = 1 - cycle;
         this.fog = false;
     }
 
     public override onBeforeCompile = (p: WebGLProgramParametersWithUniforms) => {
-        p.uniforms.cycle = { value: this._cycle };
+        this._uniforms = p.uniforms;
+        this._uniforms.cycle = { value: this._cycle };
 
         p.vertexShader = p.vertexShader.replace(
             'void main() {',
@@ -74,10 +75,10 @@ export class SkyMaterial extends MeshBasicMaterial {
             `
         );
     };
-
-
-    //updateCycle(x) {
-    //    this._cycle = x;
-    //   // if (this._shader) this._shader.uniforms.cycle.value = x;
-    //}
+    public updateDayTime(cycle: number) {
+        this._cycle = 1 - cycle;
+        if (this._uniforms) {
+            this._uniforms.cycle.value = 1 - cycle;
+        }
+    }
 }

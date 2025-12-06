@@ -12,25 +12,23 @@ preload(KTX2Loader,
 
 export class SkyBox extends Group {
   public override name = "SkyBox";
-  private _cycle  = 1;
-  private _moon: Mesh;
+  private readonly _moon: Mesh;
+  private readonly _sky: Mesh;
   constructor() {
     super();
     this.renderOrder = 0;
     this.frustumCulled = false;
-    const cycle = this._cycle;
 
     const skyGeo = new PlaneGeometry(30,30);
-    const skyMat = new SkyMaterial(cycle);
+    const skyMat = new SkyMaterial();
     const skyMesh = new Mesh(skyGeo, skyMat);
+    this._sky = skyMesh;
 
     const moonGeo = new PlaneGeometry(10,10);
     const moonTex = get<Texture>('textures/moon.ktx2')
     const moonMat = new MeshBasicMaterial({map: moonTex, fog: false, transparent: true, blending: AdditiveBlending});
     const moonMesh = new Mesh(moonGeo, moonMat);
-    moonMesh.position.set(-3,2, 1);
     this._moon = moonMesh;
-    this._updateMoon();
 
     this.add(skyMesh)
     this.add(moonMesh)
@@ -38,16 +36,24 @@ export class SkyBox extends Group {
     remove('textures/moon.ktx2');
   }
 
-  private _updateMoon(){
-     const cycle = this._cycle;
-     this._moon.position.set(-5 * (Math.cos(1.2 - cycle) + 0.1), 5.0 * (0.3 - cycle), 0.01);
-     this._moon.scale.setScalar(Math.sin(1 - cycle) + 0.3);
-     if (this._moon.material instanceof Material) {
-         this._moon.material.opacity = 1 - this._cycle;
+  private _updateMoon(cycle: number){
+     const moon = this._moon;
+     moon.position.set(-5 * (Math.cos(1.2 - cycle) + 0.1), 5.0 * (0.3 - cycle), 0.01);
+     moon.scale.setScalar(Math.sin(1 - cycle) + 0.3);
+     if (moon.material instanceof Material) {
+         moon.material.opacity = 1 - cycle;
      }
   }
 
-  public updateCycle(cycle: number){
-      this._cycle = cycle;
+    private _updateSkyMaterial(cycle: number) {
+        const mat = this._sky.material;
+        if (mat instanceof SkyMaterial) {
+            mat.updateDayTime(cycle);
+        }
+    }
+
+  public updateDayTime(cycle: number){
+      this._updateMoon(cycle);
+      this._updateSkyMaterial(cycle)
   }
 }

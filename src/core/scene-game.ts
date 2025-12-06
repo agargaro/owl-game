@@ -15,6 +15,7 @@ import {PineMeadow} from "../object/pineMeadow.js";
 import {TreeMeadow} from "../object/treeMeadow.js";
 import {SkyBox} from "../object/skyBox.js";
 import {Environment} from "../object/environment.js";
+import {DayTimeController} from "../controller/daytime-controller.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -33,6 +34,7 @@ export class GameScene extends Scene {
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
   public itemController = new ItemController(this);
+  public dayTimeController = new DayTimeController(this);
   public isUsingRocket = false;
   public lastTimeScale = 0;
 

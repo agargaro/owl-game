@@ -18,7 +18,7 @@ export class MeadowTreeMaterial extends MeshLambertMaterial {
         this.shader = null;
         this.alphaMap = alphaMap;
         this.alphaTest = 0.5;
-        this.updateDayTime(1);
+        this.updateDayTime(0);
     }
 
     public override onBeforeCompile(shader): void {
