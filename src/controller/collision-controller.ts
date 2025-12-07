@@ -37,14 +37,15 @@ export class CollisionController {
         coin.dispatchEvent({ type: 'collision', instanceIndex });
       }
 
+      AudioUtils.coinSound[AudioUtils.coinSoundIndex].stop();
       AudioUtils.coinSound[AudioUtils.coinSoundIndex].play();
-      AudioUtils.coinSoundIndex = (AudioUtils.coinSoundIndex + 1) % 50;
+      AudioUtils.coinSoundIndex = (AudioUtils.coinSoundIndex + 1) % 10;
       return false;
     });
 
     if (this._scene.isUsingRocket) return;
 
-    pine.bvh.intersectBox(owlBox, (instanceIndex) => {
+    pine.bvh.intersectBox(owlBox, () => {
       //TODO: fix dts 
       this._scene.dispatchEvent({ type: 'gameover' } as any);
       this._scene.timeScale = 0;

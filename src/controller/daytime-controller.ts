@@ -1,6 +1,7 @@
 import {GameScene} from "../core/scene-game.js";
 
 export class DayTimeController {
+    public cycle = 0;
     private _scene: GameScene;
     constructor(scene: GameScene) {
         this._scene = scene;
@@ -24,7 +25,7 @@ export class DayTimeController {
 
         const c2 = c * c;
         c = c2 * c * (c * (6 * c - 15) + 10);
-
+        this.cycle = c;
         env.updateDayTime(c);
         skyBox.updateDayTime(c);
         treeMeadow.updateDayTime(c);

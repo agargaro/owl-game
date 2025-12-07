@@ -1,4 +1,4 @@
-import { Color, Scene} from "three";
+import {Color, Scene} from "three";
 import { CollisionController } from "../controller/collision-controller.js";
 import { acceleration, maxSpeed } from "../data/config.js";
 import { Coin } from "../object/coin.js";
@@ -40,7 +40,6 @@ export class GameScene extends Scene {
 
   constructor() {
     super();
-
     this.add(
         this.env.hemiLight,
         this.env.directionalLight,
@@ -53,7 +52,6 @@ export class GameScene extends Scene {
     );
     this.fog = this.env.fog;
     this.background = new Color(0x080d1b);
-
   }
 
   public setGameMode(mode: GameMode) {
@@ -65,6 +63,7 @@ export class GameScene extends Scene {
   };
 
   private startFlight(){
+      this.env.setFlight(true, this.dayTimeController.cycle);
       this.background = this.fog.color;
       this.add(this.coin, this.pine, this.items, this.terrain);
 
@@ -91,7 +90,6 @@ export class GameScene extends Scene {
       this.skyBox.visible = false;
       this.owl.startFlight();
       this.camera.startFlight();
-      this.env.setFlight(true);
       this.env.directionalLight.position.set(0, 10, 0);
   }
 }

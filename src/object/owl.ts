@@ -8,6 +8,7 @@ import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
+import {AudioUtils} from "../core/audio.js";
 
 preload(GLTFLoader, "models/owl.glb");
 preload(KTX2Loader,
@@ -98,28 +99,45 @@ export class Owl extends Group {
 
     this.on('animate', (e) => this._mixer.update(e.delta));
   }
+    private bindInteraction(): void {
+        let idealPosition = 0;
+        let idealRotation = 0;
+        let targetVolume = 0.05;
+        let lastDirectionX = 0;
+        const halfPlayableWidth = playableWidth / 2;
 
-  private bindInteraction(): void {
-    let idealPosition = 0;
-    let idealRotation = 0;
-    const halfPlayableWidth = playableWidth / 2;
+        this._joystick.connect(document as unknown as HTMLElement);
 
-    this._joystick.connect(document as unknown as HTMLElement);
+        this._joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => {
+            const dirX = event.direction.x * event.force;
+            idealPosition = dirX * halfPlayableWidth;
+            idealRotation = -(this.position.x - idealPosition) * 0.2;
 
-    this._joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => { // TODO signature
-      idealPosition = event.direction.x * event.force * halfPlayableWidth;
-      idealRotation = -(this.position.x - idealPosition) * 0.2;
-    });
-    this._joystick.addEventListener('release', () => {
-      idealPosition = 0;
-      idealRotation = -(this.position.x * 0.2);
-    });
+            if (Math.sign(dirX) !== Math.sign(lastDirectionX) && Math.abs(dirX) > 0.1) {
+                targetVolume = 0.2;
+                setTimeout(() => {
+                    targetVolume = 0.05;
+                }, 100);
+            }
 
-    this.on("animate", (e) => {
-      const t = 1 - 0.001 ** e.delta;
-      this.position.x = lerp(this.position.x, idealPosition, t);
-      this.rotation.z = lerp(idealRotation, 0, t);
-      idealRotation = this.rotation.z;
-    });
-  }
+            lastDirectionX = dirX;
+        });
+
+        this._joystick.addEventListener('release', () => {
+            idealPosition = 0;
+            idealRotation = -(this.position.x * 0.2);
+            targetVolume = 0.05;
+            lastDirectionX = 0;
+        });
+
+        this.on("animate", (e) => {
+            const t = 1 - 0.001 ** e.delta;
+            this.position.x = lerp(this.position.x, idealPosition, t);
+            this.rotation.z = lerp(idealRotation, 0, t);
+            idealRotation = this.rotation.z;
+
+            const currentVolume = AudioUtils.windAudio.getVolume();
+            AudioUtils.windAudio.setVolume(lerp(currentVolume, targetVolume, t));
+        });
+    }
 }

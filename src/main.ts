@@ -27,8 +27,11 @@ async function startGame(): Promise<void> {
 
     const scene = new GameScene();
     new GameHUD(scene);
-
-    main.createView({ scene, camera: scene.camera, enabled: false });
+    main.createView({
+        scene,
+        camera: scene.camera,
+        enabled: false,
+    });
 
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez
 

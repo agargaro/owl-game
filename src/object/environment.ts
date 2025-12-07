@@ -38,7 +38,6 @@ export class Environment {
 
     constructor() {
         this._setupLight();
-        this.updateDayTime(0);
     }
 
     private _setupLight(): void {
@@ -83,8 +82,8 @@ export class Environment {
         this.fog.far = !isFlight ? Math.max(cameraFar * cycle, 25) : cameraFar;
     }
 
-    public setFlight(isFlight: boolean): void {
+    public setFlight(isFlight: boolean, cycle: number): void {
         this._isFlight = isFlight;
-        this.updateDayTime(0)
+        this.updateDayTime(cycle);
     }
 }
