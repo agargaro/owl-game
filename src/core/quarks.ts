@@ -1,8 +1,9 @@
 import {get, preload} from "@three.ez/asset-manager";
+//@ts-ignore
 import {BatchedRenderer, QuarksLoader, QuarksUtil} from "three.quarks";
 import {Group, Object3D, Scene, Vector3} from "three";
 
-
+//@ts-ignore
 preload(QuarksLoader, 'quarks/nw.json');
 export class Quarks {
     private static _batchedRenderer = new BatchedRenderer();
