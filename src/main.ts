@@ -22,11 +22,10 @@ async function startGame(): Promise<void> {
     const ktx2Loader = getLoader(KTX2Loader);
     ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/libs/basis/');
     ktx2Loader.detectSupport(main.renderer);
-
-    AudioUtils.init();
     await loadPending();
 
     const scene = new GameScene();
+    AudioUtils.init();
     Quarks.init(scene);
     new GameHUD(scene);
     main.createView({

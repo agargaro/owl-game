@@ -4,6 +4,7 @@ import { cameraFar } from "../data/config.js";
 
 export class GameCamera extends PerspectiveCameraAuto {
   public override name = "GameCamera";
+  public busy = false;
   private _fakeTarget = new Vector3(0,2,-15);
   private _targetOffset = new Vector3(0, 4, 4);
   private _lookAtOffset = new Vector3(0, 0, -3);
@@ -15,26 +16,20 @@ export class GameCamera extends PerspectiveCameraAuto {
     this.lookAt(0, 0, 0);
   }
 
-  public animateOwlIn(active: boolean): void {
-      if(!active) return;
+  public animateOwlIn(): void {
       const tempPosition = new Vector3();
+      tempPosition.copy(this._fakeTarget);
 
-      this.on('animate', () => {
-          tempPosition.copy(this._fakeTarget);
-
-          this.position.addVectors(tempPosition, this._targetOffset);
-          this.lookAt(tempPosition.add(this._lookAtOffset));
-      });
+      this.position.addVectors(tempPosition, this._targetOffset);
+      this.lookAt(tempPosition.add(this._lookAtOffset));
   }
 
-  public startFlight(): void {
-    this.followOwl(this._target);
-  }
-  private followOwl(target: Object3D): void {
+  public followOwl(): void {
     const tempPosition = new Vector3();
 
     this.on('animate', () => {
-      tempPosition.copy(target.position);
+      if(this.busy) return;
+      tempPosition.copy(this._target.position);
 
       this.position.addVectors(tempPosition, this._targetOffset);
       this.lookAt(tempPosition.add(this._lookAtOffset));

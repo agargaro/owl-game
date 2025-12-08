@@ -65,6 +65,7 @@ export class Owl extends Group {
     this.rotation.y = Math.PI;
     this.collider.setFromObject(this);
     this.position.y = owlFlyHeight;
+    this.position.z = -10;
   }
 
   private applyAccesories(): void {

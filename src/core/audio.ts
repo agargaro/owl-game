@@ -1,9 +1,16 @@
 import { AudioLoader, AudioListener, Audio } from 'three';
+import {get, preload} from "@three.ez/asset-manager";
 
 // TODO use three.ez/asset
+preload(AudioLoader, 'audio/main.mp3');
+preload(AudioLoader, 'audio/wind.mp3');
+preload(AudioLoader, 'audio/tree.mp3');
+preload(AudioLoader, 'audio/rocket.mp3');
+preload(AudioLoader, 'audio/coin1.mp3');
+preload(AudioLoader, 'audio/coin2.mp3');
+preload(AudioLoader, 'audio/coin3.mp3');
 
 export class AudioUtils {
-    public static audioLoader = new AudioLoader();
     public static audioListener = new AudioListener();
 
     public static rocketSound: Audio;
@@ -15,26 +22,23 @@ export class AudioUtils {
     public static windAudio: Audio;
 
     public static init() {
-        this.audioLoader.load('audio/main.mp3', (buffer) => {
-            this.mainThemeAudio = new Audio(this.audioListener).setBuffer(buffer);
-            this.mainThemeAudio.setVolume(0.03);
-            this.mainThemeAudio.setLoop(true);
-        });
+        const main = get<AudioBuffer>('audio/main.mp3');
+        this.mainThemeAudio = new Audio(this.audioListener).setBuffer(main);
+        this.mainThemeAudio.setVolume(0.03);
+        this.mainThemeAudio.setLoop(true);
 
-        this.audioLoader.load('audio/wind.mp3', (buffer) => {
-            this.windAudio = new Audio(this.audioListener).setBuffer(buffer);
-            this.windAudio.setVolume(0.05);
-            this.windAudio.setLoop(true);
-        });
-        this.audioLoader.load('audio/tree.mp3', (buffer) => {
-            this.treeSound = new Audio(this.audioListener).setBuffer(buffer);
-            this.treeSound.setVolume(0.1);
-        });
+        const wind = get<AudioBuffer>('audio/wind.mp3');
+        this.windAudio = new Audio(this.audioListener).setBuffer(wind);
+        this.windAudio.setVolume(0.05);
+        this.windAudio.setLoop(true);
 
-        this.audioLoader.load('audio/rocket.mp3', (buffer) => {
-            this.rocketSound = new Audio(this.audioListener).setBuffer(buffer);
-            this.rocketSound.setVolume(0.05);
-        });
+        const tree = get<AudioBuffer>('audio/tree.mp3')
+        this.treeSound = new Audio(this.audioListener).setBuffer(tree);
+        this.treeSound.setVolume(0.1);
+
+        const rocket = get<AudioBuffer>('audio/rocket.mp3');
+        this.rocketSound = new Audio(this.audioListener).setBuffer(rocket);
+        this.rocketSound.setVolume(0.05);
 
         const coinFiles = [
             'audio/coin1.mp3',
@@ -44,17 +48,16 @@ export class AudioUtils {
         let sounds: Audio[] = new Array(3);
         let loadedIndex = 0;
         coinFiles.forEach((file, index) => {
-            this.audioLoader.load(file, (buffer) => {
-                sounds[index] = new Audio(this.audioListener).setBuffer(buffer);
-                loadedIndex++;
-                if (loadedIndex === coinFiles.length) {
-                    for (let i = 0; i < 10; i++) {
-                        const sound = sounds[Math.floor(Math.random() * 3)];
-                        sound.setVolume(0.1)
-                        this.coinSound[i] = sound
-                    }
+            const buffer = get<AudioBuffer>(file);
+            sounds[index] = new Audio(this.audioListener).setBuffer(buffer);
+            loadedIndex++;
+            if (loadedIndex === coinFiles.length) {
+                for (let i = 0; i < 10; i++) {
+                    const sound = sounds[Math.floor(Math.random() * 3)];
+                    sound.setVolume(0.1)
+                    this.coinSound[i] = sound
                 }
-            });
+            }
         });
     }
 }
