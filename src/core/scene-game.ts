@@ -1,6 +1,6 @@
-import {Color, Euler, Scene, Vector3} from "three";
+import {Color, Scene, Vector3} from "three";
 import { CollisionController } from "../controller/collision-controller.js";
-import {acceleration, maxSpeed, owlFlyHeight} from "../data/config.js";
+import {acceleration, maxSpeed} from "../data/config.js";
 import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
@@ -18,7 +18,6 @@ import {Environment} from "../object/environment.js";
 import {DayTimeController} from "../controller/daytime-controller.js";
 import {AudioUtils} from "./audio.js";
 import { Quarks } from "./quarks.js";
-import {lerp} from "three/src/math/MathUtils.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
