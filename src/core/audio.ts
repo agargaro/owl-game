@@ -19,14 +19,12 @@ export class AudioUtils {
             this.mainThemeAudio = new Audio(this.audioListener).setBuffer(buffer);
             this.mainThemeAudio.setVolume(0.03);
             this.mainThemeAudio.setLoop(true);
-            this.mainThemeAudio.play();
         });
 
         this.audioLoader.load('audio/wind.mp3', (buffer) => {
             this.windAudio = new Audio(this.audioListener).setBuffer(buffer);
             this.windAudio.setVolume(0.05);
             this.windAudio.setLoop(true);
-            this.windAudio.play();
         });
         this.audioLoader.load('audio/tree.mp3', (buffer) => {
             this.treeSound = new Audio(this.audioListener).setBuffer(buffer);
@@ -52,7 +50,7 @@ export class AudioUtils {
                 if (loadedIndex === coinFiles.length) {
                     for (let i = 0; i < 10; i++) {
                         const sound = sounds[Math.floor(Math.random() * 3)];
-                        sound.setVolume(0.2)
+                        sound.setVolume(0.1)
                         this.coinSound[i] = sound
                     }
                 }

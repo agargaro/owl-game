@@ -16,6 +16,7 @@ import {TreeMeadow} from "../object/treeMeadow.js";
 import {SkyBox} from "../object/skyBox.js";
 import {Environment} from "../object/environment.js";
 import {DayTimeController} from "../controller/daytime-controller.js";
+import {AudioUtils} from "./audio.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -90,6 +91,8 @@ export class GameScene extends Scene {
       this.skyBox.visible = false;
       this.owl.startFlight();
       this.camera.startFlight();
+      AudioUtils.mainThemeAudio.play()
+      AudioUtils.windAudio.play(0.5)
       this.env.directionalLight.position.set(0, 10, 0);
   }
 }
