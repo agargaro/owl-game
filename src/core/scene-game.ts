@@ -17,6 +17,7 @@ import {SkyBox} from "../object/skyBox.js";
 import {Environment} from "../object/environment.js";
 import {DayTimeController} from "../controller/daytime-controller.js";
 import {AudioUtils} from "./audio.js";
+import { Quarks } from "./quarks.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -32,6 +33,7 @@ export class GameScene extends Scene {
   public skyBox = new SkyBox();
   public env = new Environment();
   public camera = new GameCamera(this.owl);
+  public quarks = new Quarks(this.scene);
   public collisionController = new CollisionController(this);
   public spawnController = new SpawnController(this);
   public itemController = new ItemController(this);
@@ -53,6 +55,10 @@ export class GameScene extends Scene {
     );
     this.fog = this.env.fog;
     this.background = new Color(0x080d1b);
+    this.owl.bindClick(this.camera);
+    this.on('animate', (e)=> {
+        Quarks.update(e.delta);
+    })
   }
 
   public setGameMode(mode: GameMode) {

@@ -2,13 +2,14 @@ import { get, preload, remove } from "@three.ez/asset-manager";
 import {
     AnimationAction, AnimationClip, AnimationMixer, Box3, Color,
     Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    MeshPhongMaterial, Texture
+    MeshPhongMaterial, Raycaster, Texture, Vector2, Vector3
 } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 import {AudioUtils} from "../core/audio.js";
+import {Quarks} from "../core/quarks.js";
 
 preload(GLTFLoader, "models/owl.glb");
 preload(KTX2Loader,
@@ -37,11 +38,21 @@ export class Owl extends Group {
     this.applyAccesories();
     this.initAnimation(gltf.animations);
     this._idleAction.fadeIn(.2).play();
+
+    this.collider.setFromObject(this);
     remove("models/owl.glb",
         `${cdnBaseUrl}/textures/owl/Owl_Brown.ktx2`,
         `${cdnBaseUrl}/textures/owl/Owl_Normal.ktx2`,
         `${cdnBaseUrl}/textures/eyes/Owl_Eyes_Brown.ktx2`
     ); // TODO put in the package
+
+    this.addEventListener("click" as any, () => {
+        Quarks.play("Bang",  {
+            position: new Vector3(0,0,0),
+            scale: 1,
+        });
+    });
+
   }
 
   public startFlight(): void {
@@ -138,6 +149,26 @@ export class Owl extends Group {
 
             const currentVolume = AudioUtils.windAudio.getVolume();
             AudioUtils.windAudio.setVolume(lerp(currentVolume, targetVolume, t));
+        });
+    }
+    public bindClick(camera): void {
+        window.addEventListener("pointerdown", (event: PointerEvent) => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            const mouse = new Vector2();
+            mouse.x = (event.clientX / w) * 2 - 1;
+            mouse.y = -(event.clientY / h) * 2 + 1;
+
+            const raycaster = new Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+
+            const tmp = new Vector3();
+            this.collider.setFromObject(this);
+
+            if (raycaster.ray.intersectBox(this.collider.expandByScalar(-0.15), tmp) !== null) {
+                this.dispatchEvent({ type: "click" } as any);
+            }
         });
     }
 }

@@ -10,7 +10,8 @@
     "@three.ez/batched-mesh-extensions": "^0.0.11",
     "@three.ez/instanced-mesh": "^0.3.9",
     "@three.ez/main": "^0.5.10",
-    "three": "^0.178.0"
+    "three": "^0.178.0",
+    "three.quarks": "^0.16.0"
   },
   "devDependencies": {
     "@types/three": "^0.178.0",
