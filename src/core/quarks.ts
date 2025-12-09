@@ -1,16 +1,9 @@
 import {get, preload} from "@three.ez/asset-manager";
 //@ts-ignore
 import {BatchedRenderer, QuarksLoader, QuarksUtil} from "three.quarks";
-import {AnimationAction, AnimationMixer, Group, Object3D, Object3DEventMap, Scene, Vector3} from "three";
+import { Group, Object3D, Object3DEventMap, Scene, Vector3 } from "three";
 
 preload(QuarksLoader, 'quarks/nw.json');
-
-interface MixerAnimation {
-    skillName: string;
-    mesh: Object3D<Object3DEventMap>;
-    mixer: AnimationMixer;
-    actions: AnimationAction[];
-}
 
 interface MissileAnimation {
     skillName: string;
@@ -75,10 +68,6 @@ export class Quarks {
 
     public static update(dt: number) {
         this._batchedRenderer.update(dt);
-
-        for (let i = this._quarksMixers.length - 1; i >= 0; i--) {
-            this._quarksMixers[i].mixer.update(dt);
-        }
 
         for (let i = this._quarksMissiles.length - 1; i >= 0; i--) {
             const m =  this._quarksMissiles[i];
