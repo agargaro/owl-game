@@ -1,4 +1,4 @@
-import {Box3, Vector2, Vector3} from "three";
+import {Box3, Vector3} from "three";
 import { GameScene } from "../core/scene-game.js";
 import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";

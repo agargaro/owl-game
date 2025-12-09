@@ -1,15 +1,14 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import {
-    AnimationAction, AnimationClip, AnimationMixer, Box3, Camera, Color,
+    AnimationAction, AnimationClip, AnimationMixer, Box3, Color,
     Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    MeshPhongMaterial, Raycaster, Scene, Texture, Vector2, Vector3
+    MeshPhongMaterial, Texture,
 } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 import {AudioUtils} from "../core/audio.js";
-import { Quarks } from "../core/quarks.js";
 import {GameScene} from "../core/scene-game.js";
 
 preload(GLTFLoader, "models/owl.glb");

@@ -1,6 +1,6 @@
 import {Color, Scene} from "three";
 import { CollisionController } from "../controller/collision-controller.js";
-import {acceleration, maxSpeed, owlFlyHeight} from "../data/config.js";
+import {acceleration, maxSpeed} from "../data/config.js";
 import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";

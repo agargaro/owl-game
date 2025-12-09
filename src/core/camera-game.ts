@@ -1,7 +1,6 @@
 import { PerspectiveCameraAuto } from "@three.ez/main";
 import { Object3D, Vector3 } from "three";
 import { cameraFar } from "../data/config.js";
-import {lerp} from "three/src/math/MathUtils.js";
 
 export class GameCamera extends PerspectiveCameraAuto {
   public override name = "GameCamera";
