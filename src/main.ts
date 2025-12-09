@@ -6,6 +6,7 @@ import { DRACOLoader, GLTFLoader, KTX2Loader } from 'three/examples/jsm/Addons.j
 import { GameScene } from './core/scene-game.js';
 import { GameHUD } from './ui/game-hud.js';
 import { AudioUtils } from './core/audio.js';
+import { Quarks } from "./core/quarks.js";
 
 async function startGame(): Promise<void> {
     extendBatchedMeshPrototype();
@@ -26,6 +27,7 @@ async function startGame(): Promise<void> {
     await loadPending();
 
     const scene = new GameScene();
+    Quarks.init(scene);
     new GameHUD(scene);
     main.createView({
         scene,
@@ -35,6 +37,6 @@ async function startGame(): Promise<void> {
 
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez
 
-   // document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
+    document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
 }
 startGame()

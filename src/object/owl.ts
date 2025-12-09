@@ -1,15 +1,16 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import {
-    AnimationAction, AnimationClip, AnimationMixer, Box3, Color,
+    AnimationAction, AnimationClip, AnimationMixer, Box3, Camera, Color,
     Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    MeshPhongMaterial, Raycaster, Texture, Vector2, Vector3
+    MeshPhongMaterial, Raycaster, Scene, Texture, Vector2, Vector3
 } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
 import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 import {AudioUtils} from "../core/audio.js";
-import {Quarks} from "../core/quarks.js";
+import { Quarks } from "../core/quarks.js";
+import {GameScene} from "../core/scene-game.js";
 
 preload(GLTFLoader, "models/owl.glb");
 preload(KTX2Loader,
@@ -24,9 +25,11 @@ export class Owl extends Group {
   private readonly _mixer = new AnimationMixer(this);
   private _flyAction: AnimationAction;
   private _idleAction: AnimationAction;
+  private _scene: GameScene;
 
-  constructor() {
+  constructor(scene: GameScene) {
     super();
+    this._scene = scene;
     this.renderOrder = 0;
     this.frustumCulled = false;
 
@@ -46,13 +49,12 @@ export class Owl extends Group {
         `${cdnBaseUrl}/textures/eyes/Owl_Eyes_Brown.ktx2`
     ); // TODO put in the package
 
-    this.addEventListener("click" as any, () => {
-        Quarks.play("Bang",  {
-            position: new Vector3(0,0,0),
-            scale: 1,
-        });
-    });
-
+    //this.addEventListener("click" as any, () => {
+    //    Quarks.play("QuestionsMark",  {
+    //        position: new Vector3(0,0,2),
+    //        scale: .1,
+    //    });
+    //});
   }
 
   public startFlight(): void {
@@ -64,7 +66,6 @@ export class Owl extends Group {
     this.rotation.y = Math.PI;
     this.collider.setFromObject(this);
     this.position.y = owlFlyHeight;
-    this.position.z = -15; // to wait 3 seconds before obstacles spawn
   }
 
   private applyAccesories(): void {
@@ -142,6 +143,7 @@ export class Owl extends Group {
         });
 
         this.on("animate", (e) => {
+            if(!this._scene.isFlying) return;
             const t = 1 - 0.001 ** e.delta;
             this.position.x = lerp(this.position.x, idealPosition, t);
             this.rotation.z = lerp(idealRotation, 0, t);
@@ -151,24 +153,24 @@ export class Owl extends Group {
             AudioUtils.windAudio.setVolume(lerp(currentVolume, targetVolume, t));
         });
     }
-    public bindClick(camera): void {
-        window.addEventListener("pointerdown", (event: PointerEvent) => {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-
-            const mouse = new Vector2();
-            mouse.x = (event.clientX / w) * 2 - 1;
-            mouse.y = -(event.clientY / h) * 2 + 1;
-
-            const raycaster = new Raycaster();
-            raycaster.setFromCamera(mouse, camera);
-
-            const tmp = new Vector3();
-            this.collider.setFromObject(this);
-
-            if (raycaster.ray.intersectBox(this.collider.expandByScalar(-0.15), tmp) !== null) {
-                this.dispatchEvent({ type: "click" } as any);
-            }
-        });
-    }
+    //public bindClick(camera): void {
+    //    window.addEventListener("pointerdown", (event: PointerEvent) => {
+    //        const w = window.innerWidth;
+    //        const h = window.innerHeight;
+//
+    //        const mouse = new Vector2();
+    //        mouse.x = (event.clientX / w) * 2 - 1;
+    //        mouse.y = -(event.clientY / h) * 2 + 1;
+//
+    //        const raycaster = new Raycaster();
+    //        raycaster.setFromCamera(mouse, camera);
+//
+    //        const tmp = new Vector3();
+    //        this.collider.setFromObject(this);
+//
+    //        if (raycaster.ray.intersectBox(this.collider.clone(), tmp) !== null) {
+    //            this.dispatchEvent({ type: "click" } as any);
+    //        }
+    //    });
+    //}
 }

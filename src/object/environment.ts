@@ -75,7 +75,7 @@ export class Environment {
         this.hemiLight.groundColor.copy(this._groundColor);
         this.directionalLight.color.copy(this._dirColor);
 
-        this.hemiLight.intensity = !isFlight ? (cycle * 0.1 + (1 - cycle + 1)) : cycle * 0.1 + 0.2;
+        this.hemiLight.intensity = !isFlight ? (cycle * 0.1 + (1 - cycle + 1)) : cycle * 0.1 + 0.5;
         this.directionalLight.intensity = !isFlight ? (cycle * 0.1 + 4) : cycle * 0.1 + 2;
 
         this.fog.near = !isFlight ? Math.max(cycle * 20, 5) : Math.min((1 - cycle) * 35, 10);

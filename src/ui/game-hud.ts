@@ -2,7 +2,7 @@ import { GameScene } from "../core/scene-game.js";
 import { GameStats } from "./game-stats.js";
 import { getMaxRockets } from "../data/rocket-service.js";
 import { getHighScore } from "../data/highscore-service.js";
-
+import {AudioUtils} from "../core/audio.js";
 const ROCKET_BUTTON_BACKGROUNDS = {
     idle: 'transparent',
     hover: 'rgba(255,255,255,0.08)',
@@ -27,12 +27,16 @@ export class GameHUD {
 
     public onGameOver(): void {
         const currentScore = this.gameStats.getCurrentScore();
-        const newRecord = this.gameStats.consumeNewHighScoreFlag();
+       // const newRecord = this.gameStats.consumeNewHighScoreFlag();
         const bestScore = getHighScore();
         this._updateGameOverStats(currentScore, bestScore);
         this.scene.lastTimeScale = this.scene.timeScale;
-        this.scene.timeScale = 0;
-        this.gameOverModal.style.top = "0dvh";
+       // this.scene.timeScale = 0;
+        this.scene.isFlying = false;
+        this.scene.owl.scale.divideScalar(100);
+        AudioUtils.treeSound.play();
+        setTimeout(() => this.gameOverModal.style.top = "0dvh", 300);
+
     }
 
     private _initHUD() {
@@ -144,6 +148,8 @@ export class GameHUD {
 
             this.gameOverModal.style.top = "-100dvh";
             this.scene.timeScale = this.scene.lastTimeScale;
+            this.scene.isFlying = true;
+            this.scene.owl.scale.multiplyScalar(100);
             this.scene.items.dispatchEvent({ type: 'active' as any }); // TODO fix d.ts
         };
 

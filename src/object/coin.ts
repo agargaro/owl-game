@@ -4,6 +4,7 @@ import {BufferGeometry, Color, Mesh, MeshLambertMaterial, MeshStandardMaterial, 
 import { GLTF, GLTFLoader } from "three/examples/jsm/Addons.js";
 import { cellSize, chunkInstanceCount, chunkRows, rocketCoinCount } from "../data/config.js";
 import { CoinEventMap } from "../data/events.js";
+import {Quarks} from "../core/quarks.js";
 
 // TODO: use meshLamberMaterial for all?
 
@@ -11,7 +12,7 @@ preload(GLTFLoader, 'models/coin.glb')
 export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial, CoinEventMap> {
   public override name = "Coin";
   public collectedCount = 0;
-
+  private _effectOffset = new Vector3(0,0, -1.7);
   constructor() {
     const gltf = get<GLTF>("models/coin.glb");
     const mesh = gltf.scene.children[0] as Mesh<BufferGeometry, MeshStandardMaterial>;
@@ -29,6 +30,10 @@ export class Coin extends InstancedMesh2<{}, BufferGeometry, MeshLambertMaterial
       // TODO add particles
       this.collectedCount++;
       this.setVisibilityAt(e.instanceIndex, false);
+      Quarks.play("Coin",  {
+          position: this.getPositionAt(e.instanceIndex).clone().add(this._effectOffset),
+          scale: .3,
+      });
       this.dispatchEvent({ type: 'collected', count: this.collectedCount });
     });
 

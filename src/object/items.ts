@@ -5,16 +5,18 @@ import {
     Matrix4,
     Mesh,
     MeshLambertMaterial,
-    Texture,
+    Texture, Vector3,
     WebGLCoordinateSystem
 } from "three";
 import {GLTF, GLTFLoader, KTX2Loader} from "three/examples/jsm/Addons.js";
 import { cellSize, owlFlyHeight } from "../data/config.js";
+import {Quarks} from "../core/quarks.js";
 
 preload(GLTFLoader, 'models/rocket.glb');
 preload(KTX2Loader, 'textures/rocket.ktx2');
 export class Items extends BatchedMesh {
   public override name = "Items";
+  private _tmpVec3 = new Vector3();
 
   constructor() {
     const rocket = get<GLTF>("models/rocket.glb").scene.children[0].children[0].children[0].children[0] as Mesh;
@@ -58,10 +60,10 @@ export class Items extends BatchedMesh {
     super(1, vertexCount, indexCount, mat);
     this.matrixAutoUpdate = false;
     this.matrixWorldAutoUpdate = false;
-    // this.renderOrder = 3;
-    this.castShadow = true;
+    this.renderOrder = 3;
+    this.castShadow = false;
     this.frustumCulled = false;
-
+    //@ts-ignore
     this.customSort = createRadixSort(this);
 
     this.addGeometry(rocket.geometry);
@@ -78,6 +80,7 @@ export class Items extends BatchedMesh {
       const geometryIndex = 0;
       // const geometryIndex = Math.floor(Math.random() * geometries.length);
       this.addInstance(geometryIndex);
+
        const laneIndex = (Math.floor(Math.random() * 3) - 1) * 2;
      // const laneIndex = 1; // force center lane for now
       // TODO 20 is the start... put in the config?
@@ -91,5 +94,11 @@ export class Items extends BatchedMesh {
         });
 
     remove("models/rocket.glb", "textures/rocket.ktx2"); // TODO put in the package
+  }
+  public startFlight(itemIndex: number){
+      Quarks.play("ItemEpicGlow",  {
+          position: this.getPositionAt(itemIndex),
+          scale: .5,
+      });
   }
 }

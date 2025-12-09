@@ -1,10 +1,11 @@
-import { Box3 } from "three";
+import {Box3, Vector2, Vector3} from "three";
 import { GameScene } from "../core/scene-game.js";
 import { Coin } from "../object/coin.js";
 import { Items } from "../object/items.js";
 import { Owl } from "../object/owl.js";
 import { Pine } from "../object/pine.js";
 import { AudioUtils } from "../core/audio.js";
+import {Quarks} from "../core/quarks.js";
 
 export class CollisionController {
   private _owl: Owl;
@@ -13,6 +14,7 @@ export class CollisionController {
   private _pine: Pine;
   private _items: Items;
   private _owlBox = new Box3();
+  private _tmpVec = new Vector3();
 
   constructor(scene: GameScene) {
     this._owl = scene.owl;
@@ -28,6 +30,7 @@ export class CollisionController {
     const pine = this._pine;
     const items = this._items;
     const owlBox = this._owlBox;
+    if (!this._scene.isFlying) return;
 
     owlBox.copy(owl.collider);
     owlBox.translate(owl.position);
@@ -45,11 +48,12 @@ export class CollisionController {
 
     if (this._scene.isUsingRocket) return;
 
-    pine.bvh.intersectBox(owlBox, () => {
-      //TODO: fix dts 
+    pine.bvh.intersectBox(owlBox, (instanceNumber) => {
+      Quarks.play("Bang",  {
+          position: pine.getPositionAt(instanceNumber).clone().add(new Vector3(0, 2, 0.5)),
+          scale: .5,
+      });
       this._scene.dispatchEvent({ type: 'gameover' } as any);
-      this._scene.timeScale = 0;
-      AudioUtils.treeSound.play();
       // TODO pause render
       return true; // stop checking other pines, it's game over
     });
