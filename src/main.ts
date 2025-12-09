@@ -1,5 +1,6 @@
 import { getLoader, loadPending } from '@three.ez/asset-manager';
 import { extendBatchedMeshPrototype } from '@three.ez/batched-mesh-extensions';
+
 import { Main } from '@three.ez/main';
 import { PCFShadowMap } from 'three';
 import { DRACOLoader, GLTFLoader, KTX2Loader } from 'three/examples/jsm/Addons.js';
@@ -31,11 +32,11 @@ async function startGame(): Promise<void> {
     main.createView({
         scene,
         camera: scene.camera,
-        enabled: false,
+        enabled: true,
     });
 
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez
 
-    document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
+   // document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
 }
 startGame()

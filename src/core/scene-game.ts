@@ -55,8 +55,8 @@ export class GameScene extends Scene {
     );
     this.fog = this.env.fog;
     this.background = new Color(0x080d1b);
-
     this.on('beforeanimate', (e) => {
+        if(this.gameMode !== "flight" || !this.isFlying || this.camera.busy) return;
         this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
     });
     this.on('beforeanimate', (e) => {
@@ -66,6 +66,7 @@ export class GameScene extends Scene {
     });
 
     this.on('afteranimate', () => {
+        if(this.gameMode !== "flight" || !this.isFlying || this.camera.busy) return;
         const depth = this.camera.position.z;
         this.env.directionalLight.position.setZ(depth);
         this.env.directionalLight.target.position.setZ(depth);

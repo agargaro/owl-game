@@ -1,8 +1,8 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import {
-    AnimationAction, AnimationClip, AnimationMixer, Box3, Color,
+    AnimationAction, AnimationClip, AnimationMixer, Box3, BoxGeometry, Color,
     Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    MeshPhongMaterial, Texture,
+    MeshPhongMaterial, Texture, Vector3,
 } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
@@ -10,6 +10,7 @@ import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 import {AudioUtils} from "../core/audio.js";
 import {GameScene} from "../core/scene-game.js";
+import {Quarks} from "../core/quarks.js";
 
 preload(GLTFLoader, "models/owl.glb");
 preload(KTX2Loader,
@@ -31,7 +32,6 @@ export class Owl extends Group {
     this._scene = scene;
     this.renderOrder = 0;
     this.frustumCulled = false;
-
     const gltf = get<GLTF>("models/owl.glb");
     this.add(...gltf.scene.children);
     this.position.y = -0.5;
@@ -40,20 +40,18 @@ export class Owl extends Group {
     this.applyAccesories();
     this.initAnimation(gltf.animations);
     this._idleAction.fadeIn(.2).play();
-
     this.collider.setFromObject(this);
+    this.hitboxes = [new Mesh(new BoxGeometry(8, 9).translate(0,5,0))];
+    this.on('click', ()=> {
+        Quarks.play('QuestionsMark',
+            {position: this.position.clone().add(new Vector3(0, .6, 0)), scale: 0.14},)
+    })
+
     remove("models/owl.glb",
         `${cdnBaseUrl}/textures/owl/Owl_Brown.ktx2`,
         `${cdnBaseUrl}/textures/owl/Owl_Normal.ktx2`,
         `${cdnBaseUrl}/textures/eyes/Owl_Eyes_Brown.ktx2`
     ); // TODO put in the package
-
-    //this.addEventListener("click" as any, () => {
-    //    Quarks.play("QuestionsMark",  {
-    //        position: new Vector3(0,0,2),
-    //        scale: .1,
-    //    });
-    //});
   }
 
   public startFlight(): void {
@@ -96,6 +94,8 @@ export class Owl extends Group {
                 break;
             case "Owl_low":
                 material = new MeshPhongMaterial({map: map, normalMap:normalMap});
+                console.log(mesh);
+
                 break;
             default:
                 break;
@@ -109,68 +109,41 @@ export class Owl extends Group {
     this._flyAction = this._mixer.clipAction(animations.find((a) => a.name === "Flight"));
     this._idleAction = this._mixer.clipAction(animations.find((a) => a.name === "Idle"));
 
-    this.on('animate', (e) => this._mixer.update(e.delta));
+    this.on('beforeanimate', (e) => this._mixer.update(e.delta));
   }
-    private bindInteraction(): void {
-        let idealPosition = 0;
-        let idealRotation = 0;
-        let targetVolume = 0.05;
-        let lastDirectionX = 0;
-        const halfPlayableWidth = playableWidth / 2;
 
-        this._joystick.connect(document as unknown as HTMLElement);
-
-        this._joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => {
-            const dirX = event.direction.x * event.force;
-            idealPosition = dirX * halfPlayableWidth;
-            idealRotation = -(this.position.x - idealPosition) * 0.2;
-
-            if (Math.sign(dirX) !== Math.sign(lastDirectionX) && Math.abs(dirX) > 0.1) {
-                targetVolume = 0.2;
-                setTimeout(() => {
-                    targetVolume = 0.05;
-                }, 100);
-            }
-
-            lastDirectionX = dirX;
-        });
-
-        this._joystick.addEventListener('release', () => {
-            idealPosition = 0;
-            idealRotation = -(this.position.x * 0.2);
-            targetVolume = 0.05;
-            lastDirectionX = 0;
-        });
-
-        this.on("animate", (e) => {
-            if(!this._scene.isFlying) return;
-            const t = 1 - 0.001 ** e.delta;
-            this.position.x = lerp(this.position.x, idealPosition, t);
-            this.rotation.z = lerp(idealRotation, 0, t);
-            idealRotation = this.rotation.z;
-
-            const currentVolume = AudioUtils.windAudio.getVolume();
-            AudioUtils.windAudio.setVolume(lerp(currentVolume, targetVolume, t));
-        });
-    }
-    //public bindClick(camera): void {
-    //    window.addEventListener("pointerdown", (event: PointerEvent) => {
-    //        const w = window.innerWidth;
-    //        const h = window.innerHeight;
-//
-    //        const mouse = new Vector2();
-    //        mouse.x = (event.clientX / w) * 2 - 1;
-    //        mouse.y = -(event.clientY / h) * 2 + 1;
-//
-    //        const raycaster = new Raycaster();
-    //        raycaster.setFromCamera(mouse, camera);
-//
-    //        const tmp = new Vector3();
-    //        this.collider.setFromObject(this);
-//
-    //        if (raycaster.ray.intersectBox(this.collider.clone(), tmp) !== null) {
-    //            this.dispatchEvent({ type: "click" } as any);
-    //        }
-    //    });
-    //}
+  private bindInteraction(): void {
+      let idealPosition = 0;
+      let idealRotation = 0;
+      let targetVolume = 0.05;
+      let lastDirectionX = 0;
+      const halfPlayableWidth = playableWidth / 2;
+      this._joystick.connect(document as unknown as HTMLElement);
+      this._joystick.addEventListener('move', (event: { direction: { x: number, y: number }, force: number }) => {
+          const dirX = event.direction.x * event.force;
+          idealPosition = dirX * halfPlayableWidth;
+          idealRotation = -(this.position.x - idealPosition) * 0.2;
+          if (Math.sign(dirX) !== Math.sign(lastDirectionX) && Math.abs(dirX) > 0.1) {
+              targetVolume = 0.2;
+              setTimeout(() => {
+                  targetVolume = 0.05;}, 100);
+          }
+          lastDirectionX = dirX;
+      });
+      this._joystick.addEventListener('release', () => {
+          idealPosition = 0;
+          idealRotation = -(this.position.x * 0.2);
+          targetVolume = 0.05;
+          lastDirectionX = 0;
+      });
+      this.on("animate", (e) => {
+          if(!this._scene.isFlying) return;
+          const t = 1 - 0.001 ** e.delta;
+          this.position.x = lerp(this.position.x, idealPosition, t);
+          this.rotation.z = lerp(idealRotation, 0, t);
+          idealRotation = this.rotation.z;
+          const currentVolume = AudioUtils.windAudio.getVolume();
+          AudioUtils.windAudio.setVolume(lerp(currentVolume, targetVolume, t));
+      });
+  }
 }
