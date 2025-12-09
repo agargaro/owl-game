@@ -118,7 +118,7 @@ export class Owl extends Group {
           idealPosition = dirX * halfPlayableWidth;
           idealRotation = -(this.position.x - idealPosition) * 0.2;
           if (Math.sign(dirX) !== Math.sign(lastDirectionX) && Math.abs(dirX) > 0.1) {
-              targetVolume = 0.2;
+              targetVolume = 0.1;
               setTimeout(() => {
                   targetVolume = 0.05;}, 100);
           }

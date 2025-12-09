@@ -11,7 +11,6 @@ body {
 canvas {
     z-index: 0;
     position: relative;
-    pointer-events: none;
     user-select: none;
     touch-action: none;
     width: 100%;
@@ -21,6 +20,7 @@ canvas {
 
 .owl-container {
     position: relative;
+    pointer-events: none;
 }
 .owl-collider{
     position: absolute;
@@ -29,6 +29,7 @@ canvas {
     bottom: 0;
     top: 0;
     margin: 1rem 0.5rem;
+    pointer-events: auto;
 }
 .needs {
     position: absolute;

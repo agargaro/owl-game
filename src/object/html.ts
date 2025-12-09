@@ -44,7 +44,7 @@ export class Html2D {
         container.className = 'owl-container';
         container.style.width = `${this._owlPxBox.width}px`;
         container.style.height = `${this._owlPxBox.height}px`;
-        container.style.pointerEvents = 'auto';
+        container.style.pointerEvents = 'none';
 
         const owlCollider = document.createElement("div");
         owlCollider.className = 'owl-collider';
@@ -56,9 +56,11 @@ export class Html2D {
         container.appendChild(bubble);
 
         owlCollider.addEventListener('click', () => {
+            if (this.scene.gameMode === 'flight') return;
             Quarks.play('QuestionsMark', { position: new Vector3(0,0.2,0), scale: 0.14 });
         });
         bubble.addEventListener('click', () => {
+            if (this.scene.gameMode === 'flight') return;
             this.scene.setGameMode('flight');
         });
         const obj = new CSS2DObject(container);
@@ -69,7 +71,6 @@ export class Html2D {
         this._containers.push(obj);
         return obj;
     }
-
 
     public render() {
         this.renderer2D.render(this.scene, this.camera);

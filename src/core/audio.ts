@@ -24,12 +24,12 @@ export class AudioUtils {
     public static init() {
         const main = get<AudioBuffer>('audio/main.mp3');
         this.mainThemeAudio = new Audio(this.audioListener).setBuffer(main);
-        this.mainThemeAudio.setVolume(0.03);
+        this.mainThemeAudio.setVolume(0);
         this.mainThemeAudio.setLoop(true);
 
         const wind = get<AudioBuffer>('audio/wind.mp3');
         this.windAudio = new Audio(this.audioListener).setBuffer(wind);
-        this.windAudio.setVolume(0.05);
+        this.windAudio.setVolume(0);
         this.windAudio.setLoop(true);
 
         const tree = get<AudioBuffer>('audio/tree.mp3')
@@ -59,5 +59,22 @@ export class AudioUtils {
                 }
             }
         });
+    }
+    public static fadeIn(audio: Audio, targetVolume: number, duration: number) {
+        const gainNode = (audio as any).getOutput();
+        gainNode.gain.cancelScheduledValues(audio.context.currentTime);
+        gainNode.gain.setValueAtTime(0, audio.context.currentTime);
+
+        if (!audio.isPlaying) audio.play();
+
+        gainNode.gain.linearRampToValueAtTime(targetVolume, audio.context.currentTime + duration / 1000);
+    }
+
+
+    public static fadeOut(audio: Audio, duration: number) {
+        const gainNode = (audio as any).getOutput();
+        gainNode.gain.cancelScheduledValues(audio.context.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0, audio.context.currentTime + duration / 1000);
+        setTimeout(() => audio.stop(), duration);
     }
 }

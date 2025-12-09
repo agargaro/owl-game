@@ -8,10 +8,11 @@ import { GameScene } from './core/scene-game.js';
 import { GameHUD } from './ui/game-hud.js';
 import { AudioUtils } from './core/audio.js';
 import { Quarks } from "./core/quarks.js";
+import {PreloaderOverlay} from "./utils/preloader.js";
 
 async function startGame(): Promise<void> {
     extendBatchedMeshPrototype();
-
+    const overlay = new PreloaderOverlay();
     const main = new Main({ showStats: true, fullscreen: true, enableCursor: false, rendererParameters: { antialias: false, alpha: false } });
 
     main.renderer.shadowMap.enabled = true;
@@ -23,7 +24,7 @@ async function startGame(): Promise<void> {
     const ktx2Loader = getLoader(KTX2Loader);
     ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/libs/basis/');
     ktx2Loader.detectSupport(main.renderer);
-    await loadPending({ onProgress: (e) => console.log(e * 100 + '%'), onError: (e) => console.error(e) });
+    await loadPending({ onProgress: (e) => overlay.setProgress(e), onError: (e) => console.error(e) });
 
     const scene = new GameScene();
     AudioUtils.init();

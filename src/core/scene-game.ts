@@ -103,16 +103,14 @@ export class GameScene extends Scene {
       this.items.startFlight(0);
       Quarks.prewarm(['Coin', 'Bang', 'ItemEpicGlow']);
 
-      console.log("call");
       this.owl.tween()
           .by(3000, { position: new Vector3(0,0,-5) }, { easing: 'easeInOutBack' })
           .call(()=> {
               this.isFlying = true;
               this.camera.busy = false;
               this.camera.followOwl();
-              console.log("call");
-              AudioUtils.mainThemeAudio.play();
-              AudioUtils.windAudio.play(0.5);
+              AudioUtils.fadeIn(AudioUtils.mainThemeAudio, 0.1, 1000);
+              AudioUtils.fadeIn(AudioUtils.windAudio, 0.05, 1000);
           })
           .start()
 
