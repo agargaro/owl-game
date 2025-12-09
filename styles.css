@@ -38,7 +38,6 @@ canvas {
     pointer-events: auto;
     display: flex;
     padding: 1rem;
-    aspect-ratio: 1/1;
     background-color: #fff;
     border-radius: 50%;
     opacity: .9;
