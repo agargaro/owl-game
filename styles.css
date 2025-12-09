@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+html,
+body {
+    max-width: 100vw;
+    height: 100%;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+canvas {
+    z-index: 0;
+    position: relative;
+    pointer-events: none;
+    user-select: none;
+    touch-action: none;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.owl-container {
+    position: relative;
+}
+.owl-collider{
+    position: absolute;
+    left:0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    margin: 1rem 0.5rem;
+}
+.needs {
+    position: absolute;
+    right: -2rem;
+    top: -3.5rem;
+    pointer-events: auto;
+    display: flex;
+    padding: 1rem;
+    aspect-ratio: 1/1;
+    background-color: #fff;
+    border-radius: 50%;
+    opacity: .9;
+    transform-origin: top left;
+    animation: popIn 5s ease infinite;
+}
+
+.needs:before {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    bottom: -.9rem;
+    left: -.4rem;
+    transform: scale(0);
+    transform-origin: top left;
+    animation: pointerPop 3s ease infinite;
+}
+
+@keyframes popIn {
+    0% {
+        transform: translateY(-3px);
+    }
+    40% {
+        transform: translateY(0px);
+    }
+    100% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes pointerPop {
+    0% {
+        transform: scale(.8);
+        opacity: .6;
+    }
+    60% {
+        transform: scale(1);
+        opacity: .8;
+    }
+    100% {
+        opacity: .6;
+        transform: scale(.8);
+    }
+}
+

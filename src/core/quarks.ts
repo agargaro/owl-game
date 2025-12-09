@@ -25,7 +25,6 @@ export class Quarks {
     private static _batchedRenderer = new BatchedRenderer();
     private static  effects = new Map<string, Object3D>();
     private static _scene: Scene;
-    private static _quarksMixers: MixerAnimation[] = [];
     private static _quarksMissiles: MissileAnimation[] = [];
 
     public static init(scene: Scene) {
@@ -58,12 +57,11 @@ export class Quarks {
         name: string,
         options?: { position?: Vector3; scale?: number; rotation?: number }
     ) {
-        console.log("Playing Effect: " + name + "Position: " + options?.position + "Scale: " + options?.scale + "Rotation: " + options?.rotation + "")
         const src = this.effects.get(name);
         if (!src) return;
 
 
-        const cloned = src.clone(true) as Object3D;
+        const cloned = src.clone(true);
         if (options?.position) cloned.position.copy(options.position);
         if (options?.scale) cloned.scale.setScalar(options.scale);
         if (options?.rotation) cloned.rotation.y = options.rotation;

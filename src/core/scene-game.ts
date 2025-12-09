@@ -18,6 +18,7 @@ import {Environment} from "../object/environment.js";
 import {DayTimeController} from "../controller/daytime-controller.js";
 import {AudioUtils} from "./audio.js";
 import { Quarks } from "./quarks.js";
+import {Html2D} from "../object/html.js";
 
 export class GameScene extends Scene {
   public override name = "Scene-Game";
@@ -40,6 +41,7 @@ export class GameScene extends Scene {
   public isUsingRocket = false;
   public lastTimeScale = 0;
   public isFlying = false;
+  public html = new Html2D(this, this.camera);
 
   constructor() {
     super();
@@ -60,11 +62,13 @@ export class GameScene extends Scene {
         this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
     });
     this.on('beforeanimate', (e) => {
-        Quarks.update(e.delta);
         if(this.gameMode !== "flight" || !this.isFlying || this.camera.busy) return;
         this.owl.translateZ(e.delta * 10 * (this.isUsingRocket ? 2 : 1));
     });
-
+    this.on('animate', (e)=>{
+        Quarks.update(e.delta);
+        this.html.render()
+    })
     this.on('afteranimate', () => {
         if(this.gameMode !== "flight" || !this.isFlying || this.camera.busy) return;
         const depth = this.camera.position.z;
@@ -75,8 +79,8 @@ export class GameScene extends Scene {
             this.collisionController.update();
         }
     });
+    this.html.addNeeds();
   }
-
   public setGameMode(mode: GameMode) {
       this.gameMode = mode
       if(mode === "flight") {
@@ -98,13 +102,15 @@ export class GameScene extends Scene {
       this.env.directionalLight.position.set(0, 10, 0);
       this.items.startFlight(0);
       Quarks.prewarm(['Coin', 'Bang', 'ItemEpicGlow']);
+
+      console.log("call");
       this.owl.tween()
           .by(3000, { position: new Vector3(0,0,-5) }, { easing: 'easeInOutBack' })
           .call(()=> {
               this.isFlying = true;
               this.camera.busy = false;
               this.camera.followOwl();
-
+              console.log("call");
               AudioUtils.mainThemeAudio.play();
               AudioUtils.windAudio.play(0.5);
           })

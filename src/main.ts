@@ -12,7 +12,7 @@ import { Quarks } from "./core/quarks.js";
 async function startGame(): Promise<void> {
     extendBatchedMeshPrototype();
 
-    const main = new Main({ showStats: true, enableCursor: false, rendererParameters: { antialias: false, alpha: false } });
+    const main = new Main({ showStats: true, fullscreen: true, enableCursor: false, rendererParameters: { antialias: false, alpha: false } });
 
     main.renderer.shadowMap.enabled = true;
     main.renderer.shadowMap.type = PCFShadowMap;
@@ -23,7 +23,7 @@ async function startGame(): Promise<void> {
     const ktx2Loader = getLoader(KTX2Loader);
     ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/libs/basis/');
     ktx2Loader.detectSupport(main.renderer);
-    await loadPending();
+    await loadPending({ onProgress: (e) => console.log(e * 100 + '%'), onError: (e) => console.error(e) });
 
     const scene = new GameScene();
     AudioUtils.init();
@@ -32,7 +32,7 @@ async function startGame(): Promise<void> {
     main.createView({
         scene,
         camera: scene.camera,
-        enabled: true,
+        enabled: false,
     });
 
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez

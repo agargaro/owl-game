@@ -20,6 +20,7 @@ export class GameCamera extends PerspectiveCameraAuto {
       const tempPosition = new Vector3();
       tempPosition.copy(this._fakeTarget);
 
+      console.log("call cam");
       this.position.addVectors(tempPosition, this._targetOffset);
       this.lookAt(tempPosition.add(this._lookAtOffset));
   }

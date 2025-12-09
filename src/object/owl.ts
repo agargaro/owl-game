@@ -1,8 +1,8 @@
 import { get, preload, remove } from "@three.ez/asset-manager";
 import {
-    AnimationAction, AnimationClip, AnimationMixer, Box3, BoxGeometry, Color,
+    AnimationAction, AnimationClip, AnimationMixer, Box3, Color,
     Group, Mesh, MeshBasicMaterial, MeshLambertMaterial,
-    MeshPhongMaterial, Texture, Vector3,
+    MeshPhongMaterial, Texture,
 } from "three";
 import { GLTF, GLTFLoader, KTX2Loader } from "three/examples/jsm/Addons.js";
 import { lerp } from "three/src/math/MathUtils.js";
@@ -10,7 +10,6 @@ import {cdnBaseUrl, owlFlyHeight, playableWidth} from "../data/config.js";
 import { VirtualJoystick } from "../ui/virtual-joystick.js";
 import {AudioUtils} from "../core/audio.js";
 import {GameScene} from "../core/scene-game.js";
-import {Quarks} from "../core/quarks.js";
 
 preload(GLTFLoader, "models/owl.glb");
 preload(KTX2Loader,
@@ -41,11 +40,6 @@ export class Owl extends Group {
     this.initAnimation(gltf.animations);
     this._idleAction.fadeIn(.2).play();
     this.collider.setFromObject(this);
-    this.hitboxes = [new Mesh(new BoxGeometry(8, 9).translate(0,5,0))];
-    this.on('click', ()=> {
-        Quarks.play('QuestionsMark',
-            {position: this.position.clone().add(new Vector3(0, .6, 0)), scale: 0.14},)
-    })
 
     remove("models/owl.glb",
         `${cdnBaseUrl}/textures/owl/Owl_Brown.ktx2`,
