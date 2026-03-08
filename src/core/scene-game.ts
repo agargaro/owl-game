@@ -40,6 +40,7 @@ export class GameScene extends Scene {
   public dayTimeController = new DayTimeController(this);
   public isUsingRocket = false;
   public lastTimeScale = 0;
+  public lastTimeScaleBeforeBlur: number | null = null;
   public isFlying = false;
   public html = new Html2D(this, this.camera);
 
@@ -58,6 +59,7 @@ export class GameScene extends Scene {
     this.fog = this.env.fog;
     this.background = new Color(0x080d1b);
     this.on('beforeanimate', (e) => {
+        console.log(e.delta);
         if(this.gameMode !== "flight" || !this.isFlying || this.camera.busy) return;
         this.timeScale = Math.min(maxSpeed, this.timeScale + e.delta * acceleration);
     });
@@ -78,8 +80,21 @@ export class GameScene extends Scene {
         if (this.scene.timeScale > 0) {
             this.collisionController.update();
         }
+
+        if (this.lastTimeScaleBeforeBlur !== null) {
+            this.timeScale = this.lastTimeScaleBeforeBlur; // reset timeScale in case it was changed by tab losing focus
+            this.lastTimeScaleBeforeBlur = null;
+        }
     });
     this.html.addNeeds();
+
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            // Tab lost focus - save current timeScale and pause
+            this.lastTimeScaleBeforeBlur = this.timeScale;
+            this.timeScale = 0;
+        }
+    });
   }
   public setGameMode(mode: GameMode) {
       this.gameMode = mode
