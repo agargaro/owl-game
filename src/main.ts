@@ -1,14 +1,15 @@
 import { getLoader, loadPending } from '@three.ez/asset-manager';
 import { extendBatchedMeshPrototype } from '@three.ez/batched-mesh-extensions';
 
-import { Main } from '@three.ez/main';
+import { Main, PerspectiveCameraAuto } from '@three.ez/main';
 import { PCFShadowMap } from 'three';
 import { DRACOLoader, GLTFLoader, KTX2Loader } from 'three/examples/jsm/Addons.js';
 import { GameScene } from './core/scene-game.js';
 import { GameHUD } from './ui/game-hud.js';
 import { AudioUtils } from './core/audio.js';
 import { Quarks } from "./core/quarks.js";
-import {PreloaderOverlay} from "./utils/preloader.js";
+import { PreloaderOverlay } from "./utils/preloader.js";
+import { NewScene } from './core/new-scene.js';
 
 async function startGame(): Promise<void> {
     extendBatchedMeshPrototype();
@@ -27,6 +28,7 @@ async function startGame(): Promise<void> {
     await loadPending({ onProgress: (e) => overlay.setProgress(e), onError: (e) => console.error(e) });
 
     const scene = new GameScene();
+    const scene2 = new NewScene();
     AudioUtils.init();
     Quarks.init(scene);
     new GameHUD(scene);
@@ -36,8 +38,15 @@ async function startGame(): Promise<void> {
         enabled: false,
     });
 
+    main.createView({
+        scene: scene2,
+        camera: new PerspectiveCameraAuto(),
+        enabled: false,
+        viewport: { left: 0, bottom: 0, width: 0.1, height: 0.1 },
+    });
+
     main.renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio)); // todo put it in three.ez
 
-   // document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
+    // document.addEventListener('click',() => scene.setGameMode('flight'), { once: true });
 }
 startGame()

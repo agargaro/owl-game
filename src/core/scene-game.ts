@@ -24,7 +24,7 @@ export class GameScene extends Scene {
   public override name = "Scene-Game";
   public gameMode: GameMode = "normal";
   public tree = new Tree();
-  public owl = new Owl(this);
+  public owl = new Owl(this, []); // TODO ADD_ACCESORIES
   public coin = new Coin();
   public pine = new Pine();
   public items = new Items();
